@@ -47,4 +47,4 @@
   ```
   - Note: These commands can take 10 - 15 minutes to complete. 
 ### Verifying TensorFlow Install
-- Once the previous commands are finished running, run `pip freeze | grep tensorflow` to verify that tensorflow has been installed. 
+- Once the previous commands are finished running, run `pip show tensorflow` to verify that tensorflow has been installed. 

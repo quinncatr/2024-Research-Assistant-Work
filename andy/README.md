@@ -22,6 +22,7 @@
 - https://developer.download.nvidia.com/assets/embedded/secure/jetson/Nano/docs/NV_Jetson_Nano_Developer_Kit_User_Guide.pdf?RiV_dF65QGf4OFgHiKstg8sPxBmWBNHMvXjOzp87KE9QISQQpuBoE9b8Zyh5RCTVXABr_97DdoGWEmfUdL3KXSOmAER0PmRvZ3Vdsp-U98lsIBCj_l_f9lp5yqGdUGx2Z6ROhlbcvf2G3Sfxt6RQgidEeUdz7Vr1dQg8276fuhcaNFgYpNP45hslUgP3Rn4dG7s=&t=eyJscyI6InJlZiIsImxzZCI6IlJFRi1kdWNrZHVja2dvLmNvbS8ifQ==
 
 ## SSH into Jetson Nano
+- Once Jetpack is installed and the Nano is booted, it is easier to run everything else through an SSH connection. The Nano struggles when using a monitor and external IO devices. Once and SSH connection is established, run the rest of the commands from another linux machine that is remotley connected via SSH to the Jetson Nano.
 ### SSH Setup
 - To ensure that the Nvidia Jetson Nano is able to act as a remote server, run `sudo apt install openssh-client openssh-server` in the terminal of the Nano. Type yes when prompted and follow the instructions given. Once that is done, run the same exact command on the linux machine that will remotely connect to the Nano. By running both openssh-client and open ssh-server, both machines can ssh into each other. If you want only one machine to ssh into another, run `sudo apt install openssh-server` on the Nano and `sudo apt install openssh-client` on your linux machine.
 ### Creating an SSH Connection

@@ -11,15 +11,15 @@
 - To install the file that has been downloaded in the previous step, flash it to a micro sd card. Further instructions can be found [here](https://developer.nvidia.com/embedded/learn/get-started-jetson-nano-devkit#write).
 ### Booting Jetson Nano:
 - Once Jetpack is flashed to a microSD card, insert the microSD into the slot on the Nano. Once the Nano has power and is connected to a display, it should automatically boot and take you through standard OS setup. Further instructions can be found [here](https://developer.nvidia.com/embedded/learn/get-started-jetson-nano-devkit#setup)
-- Note: Versions of Jetpack newer than 4.6.1 will not boot.
+  - Note: Versions of Jetpack newer than 4.6.1 will not boot.
 ## Additional Information
 ### The following links provide more information about the Jetson Nano and other devices.
-- Note: Some of these links have files that are not compatible with the Nano. For downloading supported software, only use information above. 
 - [Nvidia Jetson Developer Guide](https://docs.nvidia.com/jetson/archives/r36.3/DeveloperGuide/index.html)
 - [Nvidia Jetson DownLoad Center](https://developer.nvidia.com/embedded/downloads)
 - [Getting Started with Nvidia Jetson Nano](https://developer.nvidia.com/embedded/learn/get-started-jetson-nano-devkit)
 - [Nvidia Jetson Nano Supported Components](https://developer.download.nvidia.com/assets/embedded/secure/jetson/Nano/docs/Jetson_Nano_Supported_Components_List_NV.pdf?76ypPONhPK8pnVWKKmtrcDs8GSSXFzGyO5o03ipRp0qyxzI9_ahJyPqFqwQqMsE_j49n7W-NixTZ_dqhQBKy0qT6Tm1nbsY9KRl-ZnN4kLiqOXWDAjaSzrse1t7U2wanxvJOOMoAg7xmbNcomI3d5rtrpKlv80qgbpkyCsAGFRO4SVbpcT4_uxlogxHmtV9wIHQu&t=eyJscyI6InJlZiIsImxzZCI6IlJFRi1kdWNrZHVja2dvLmNvbS8ifQ==)
 - [Nvidia Jetson Nano Developer Kit User Guide](https://developer.download.nvidia.com/assets/embedded/secure/jetson/Nano/docs/NV_Jetson_Nano_Developer_Kit_User_Guide.pdf?RiV_dF65QGf4OFgHiKstg8sPxBmWBNHMvXjOzp87KE9QISQQpuBoE9b8Zyh5RCTVXABr_97DdoGWEmfUdL3KXSOmAER0PmRvZ3Vdsp-U98lsIBCj_l_f9lp5yqGdUGx2Z6ROhlbcvf2G3Sfxt6RQgidEeUdz7Vr1dQg8276fuhcaNFgYpNP45hslUgP3Rn4dG7s=&t=eyJscyI6InJlZiIsImxzZCI6IlJFRi1kdWNrZHVja2dvLmNvbS8ifQ==)
+  - Note: Some of these links have files that are not compatible with the Nano. For downloading supported software, only use information above. 
 
 ## SSH into Jetson Nano
 - Once Jetpack is installed and the Nano is booted, it is easier to run everything else through an SSH connection. The Nano struggles when using a monitor and external IO devices. Once an SSH connection is established, run the rest of the commands from another linux machine that is remotely connected via SSH to the Jetson Nano.
@@ -35,7 +35,7 @@
 ### TensorFlow version
 - Due to the Jetson Nano supporting only up to Jetpack 4.6.1, TensorFlow 2.7.0 is the version that works best. In order to install TensorFlow 2.7.0, Python 3.6 is needed. Once the correct version of Python is installed, TensorFlow can be installed.
 ### TensorFlow Install
-- To install TensorFlow with Jetpack 4.6.1, run the following commands in order.
+- To install TensorFlow 2.7.0 with Jetpack 4.6.1, run the following commands in order.
   ```
   sudo apt-get update
   sudo apt-get install -y python3-pip pkg-config
@@ -46,5 +46,5 @@
   sudo pip3 install --verbose tensorflow-2.7.0+nv22.1-cp36-cp36m-linux_aarch64.whl
   ```
   - Note: These commands can take 10 - 15 minutes to complete. 
-  ### Verifying TensorFlow Install
-  - Once the previous commands are finished running, run `pip freeze | grep tensorflow` to verify that tensorflow has been installed. 
+### Verifying TensorFlow Install
+- Once the previous commands are finished running, run `pip freeze | grep tensorflow` to verify that tensorflow has been installed. 

@@ -47,4 +47,9 @@
   ```
   - Note: These commands can take 10 - 15 minutes to complete. 
 ### Verifying TensorFlow Install
-- Once the previous commands are finished running, run `pip show tensorflow` to verify that tensorflow has been installed. 
+- Once the previous commands are finished running, run `pip show tensorflow` to verify that tensorflow has been installed.
+
+## Using TensorFlow
+### Initial Setup
+- Once TensorFlow is installed, follow the quickstart tutorial [here](https://www.tensorflow.org/tutorials/quickstart/beginner)
+  - Because the Jetson Nano is slightly outdated, an older verion of Keras is needed. To downgrade Keras, run `pip install keras==2.6` in the Nano's terminal.

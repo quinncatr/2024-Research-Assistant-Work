@@ -10,7 +10,7 @@
 - Once on the Jetpack page, navigate to "Installing Jetpack" and click on "Jetson Nano Developer Kits". Once there, download the correct version based on the amount of RAM your Nano has. The default version is for a Nano with 4 GB of RAM. 
 - To install the file that has been downloaded in the previous step, flash it to a micro sd card. Further instructions can be found [here](https://developer.nvidia.com/embedded/learn/get-started-jetson-nano-devkit#write).
 ### Booting Jetson Nano:
-- Once Jetpack is flashed to a microSD card, insert the microSD into the slot on the Nano. Once the Nano has power and is connected to a display, it should automatically boot and take you through standard OS setup. Further instructions can be found [here](https://developer.nvidia.com/embedded/learn/get-started-jetson-nano-devkit#setup)
+- Once Jetpack is flashed to a microSD card, insert the microSD into the slot on the Nano. Once the Nano has power and is connected to a display, it should automatically boot and take you through standard OS setup. Further instructions can be found [here](https://developer.nvidia.com/embedded/learn/get-started-jetson-nano-devkit#setup).
   - Note: Versions of Jetpack newer than 4.6.1 will not boot.
 ## Additional Information
 ### The following links provide more information about the Jetson Nano and other devices.
@@ -51,5 +51,5 @@
 
 ## Using TensorFlow
 ### Initial Setup
-- Once TensorFlow is installed, follow the quickstart tutorial [here](https://www.tensorflow.org/tutorials/quickstart/beginner)
-  - Because the Jetson Nano is slightly outdated, an older verion of Keras is needed. To downgrade Keras, run `pip install keras==2.6` in the Nano's terminal.
+- Once TensorFlow is installed, follow the quickstart tutorial [here](https://www.tensorflow.org/tutorials/quickstart/beginner).
+  - Note: Because the Jetson Nano is slightly outdated, the most recent version of Keras supported is 2.6. Since Tensorflow automatically comes with a new version than 2.6, it must be dongraded. To downgrade Keras, run `pip install keras==2.6` in the Nano's terminal.

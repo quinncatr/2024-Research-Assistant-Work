@@ -7,7 +7,24 @@
 - You should now be in!
 
 ## How to achieve SSH access to the Jetson Nano:
+- You can use this command on your Virtual Machine to install client applications for SSH: 
+sudo apt install openssh-client  
+- And this command on the Nano to install server applications for SSH: 
+sudo apt install openssh-server
+- Once these are done, you can SSH into the Nano via the command: ssh yournanousername@nanoip
+- This article on Ubuntu's website can help: [link](https://ubuntu.com/server/docs/openssh-server)
 
 ## How to Install Tensorflow on the Jetson Nano:
-
-
+- After SSH-ing into the Nano, the next step is to install Tensorflow
+- The webpage [Jetson_Zoo](https://elinux.org/Jetson_Zoo) which also is on the desktop of the nano when first booting is very helpful with installing necessary packages like Tensorflow.
+- You're gonna want to do these commands in order:
+```
+sudo apt-get install libhdf5-serial-dev hdf5-tools libhdf5-dev zlib1g-dev zip libjpeg8-dev liblapack-dev libblas-dev gfortran
+sudo apt-get install python3-pip
+sudo pip3 install -U pip testresources setuptools=49.6.0
+sudo pip3 install -U numpy==1.19.4 future==0.18.2 mock==3.0.5 h5py==2.10.0 keras_preprocessing==1.1.1 keras_applications==1.0.8 gast==0.2.2 futures protobuf pybind11
+```
+- Depending on what version of Jetpack you have you'll have in change the number next to the v in the link below in my class it is 461 because I have JetPack v4.6.1
+```
+sudo pip3 install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v461 tensorflow
+```

@@ -52,4 +52,4 @@
 ## Using TensorFlow
 ### Initial Setup
 - Once TensorFlow is installed, follow the quickstart tutorial [here](https://www.tensorflow.org/tutorials/quickstart/beginner).
-  - Note: Because the Jetson Nano is slightly outdated, the most recent version of Keras supported is 2.6. Since Tensorflow automatically comes with a new version than 2.6, it must be dongraded. To downgrade Keras, run `pip install keras==2.6` in the Nano's terminal.
+  - Note: Because the Jetson Nano is slightly outdated, the most recent version of Keras supported is 2.6. Since Tensorflow automatically comes with a newer version than 2.6, it must be downgraded. To downgrade Keras, run `pip install keras==2.6` in the Nano's terminal.

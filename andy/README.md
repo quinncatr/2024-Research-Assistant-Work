@@ -51,5 +51,11 @@
 
 ## Using TensorFlow
 ### Initial Setup
+- Because the Jetson Nano is slightly outdated, the most recent version of Keras supported is 2.6. Since Tensorflow automatically comes with a newer version than 2.6, it must be downgraded. To downgrade Keras, run `pip install keras==2.6` in the Nano's terminal.
 - Once TensorFlow is installed, follow the quickstart tutorial [here](https://www.tensorflow.org/tutorials/quickstart/beginner).
-  - Note: Because the Jetson Nano is slightly outdated, the most recent version of Keras supported is 2.6. Since Tensorflow automatically comes with a newer version than 2.6, it must be downgraded. To downgrade Keras, run `pip install keras==2.6` in the Nano's terminal.
+  - Note: If this tutorial throws an error about the GPU memory being maxed out, add this code block that reallocates memory.
+ ```
+    device = tf.config.list_physical_devices('GPU')
+    tf.config.experimental.set_memory_growth(device[0], True)
+    tf.config.experimental.set_virtual_device_configuration(device[0], [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=1024)])
+```

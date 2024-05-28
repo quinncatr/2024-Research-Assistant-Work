@@ -1,7 +1,7 @@
 ## Jetson Nano Setup
 ### About Jetson Nano
 - The Nvidia Jetson Nano is a small Raspberry Pi type machine to experiment with machine learning, GPU utilization and more. The Nano is a few years old and as a result, is only compatible with older versions of most software needed.
-- The newest supported verion of Jetpack for the Nano is Jetpack 4.6.1. All instructions in this document work for the Nvidia Jetson Nano running Jetpack 4.6.1. Any other machine or Jetpack version likley will have different steps than the ones laid out below.
+- The newest supported version of Jetpack for the Nano is Jetpack 4.6.1. All instructions in this document work for the Nvidia Jetson Nano running Jetpack 4.6.1. Any other machine or Jetpack version likley will have different steps than the ones laid out below.
 ### About Jetpack:
 - The Nvidia Jetpack SDK is a software package that includes a linux based operating system in addition to various tools that can take advantage of the Nvidia Jetson Nano's CPU, GPU, and accelerators. Because Jetpack includes an operating system, it can be downloaded and used to boot the Nano. Once booted, the Nano will have an operating system, various development packages and tools, and examples of how those tools can be used.
 - One caveat of the the Jetson Nano is that it does not support the newest versions of most software. For example, Jetpack 6 is not supported so Jetpack 4 is needed. In addition, the newest version of VScode that is supported is 1.83. 
@@ -53,11 +53,11 @@
 ### Initial Setup
 - Because the Jetson Nano is slightly outdated, the most recent version of Keras supported is 2.6. Since Tensorflow automatically comes with a newer version than 2.6, it must be downgraded. To downgrade Keras, run `pip install keras==2.6` in the Nano's terminal.
 - Once TensorFlow is installed, follow the quickstart tutorial [here](https://www.tensorflow.org/tutorials/quickstart/beginner).
-  - Note: If this tutorial throws an error about the GPU memory being maxed out, add this code block to reallocates memory.
+  - Note: If this tutorial throws an error about the GPU memory being maxed out, add this code block to reallocate memory.
  ```
     device = tf.config.list_physical_devices('GPU')
     tf.config.experimental.set_memory_growth(device[0], True)
     tf.config.experimental.set_virtual_device_configuration(device[0], [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=1024)])
 ```
-  - By default, Tensorflow has a certain amount of GPU memory it uses. This code allows TensorFlow to dynamically allocate GPU memory, which allows it to increase the amount of memory it uses if the dataset takes up more than the default amount. 
+  - By default, Tensorflow has a fixed amount of GPU memory it can use. The code above allows TensorFlow to dynamically allocate GPU memory, which allows it to increase the amount of memory it uses if the dataset takes up more than the default amount. 
   - Note: If the tutorial core dumps, a different version of numpy may be needed. The most stable version for the Nano is 1.19.4. To install the stable version of numpy, run `pip3 install numpy==1.19.4` in the Nano's terminal.

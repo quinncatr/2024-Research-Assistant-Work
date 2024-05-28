@@ -64,6 +64,21 @@
 
 ## VPI (Video Programming Interface)
 ### Installation
-- Nvidia VPI is included in the Jetpack SDK. Jetpack 4.6.1 comes with VPI 1.2 already installed
+- Due to the Jetson Nano running Jetpack 4.6.1, VPI 1.2 is the newest supported version of VPI. Jetpack 4.6.1 includes Ubuntu 18.04, which determines the version of VPI that can be used.
+- To install VPI 1.2 on the Nano, run the following commands in the terminal. 
+  - Note: These commands will only work for Jetpack 4.6.1 running Ubuntu 18.04
+```
+sudo apt-get update
+sudo apt-get install libnvvpi1
+sudo apt install gnupg
+sudo apt-key adv --fetch-key https://repo.download.nvidia.com/jetson/jetson-ota-public.asc
+sudo apt install software-properties-common
+sudo add-apt-repository 'deb https://repo.download.nvidia.com/jetson/x86_64 bionic r32.7'
+sudo apt update
+sudo apt install libnvvpi1 vpi1-dev vpi1-samples
+sudo apt install vpi1-demos
+```
+### VPI 1.2 Operations
+- 
 
 

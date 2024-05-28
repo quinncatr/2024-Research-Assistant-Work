@@ -85,6 +85,16 @@ sudo apt install vpi1-demos
 - The following table lists the algorithms inlcuded in Nvidia VPI along with the backends that they can be run on.
   - Note: The table is only compatibale with a Jetson Nano running VPI 1.2.
 
+### VIC Operations
+
+| Algorithm | CPU | CUDA | PVA | VIC |
+| --------- | --- | ---- | --- | --- |
+| Temporal Noise Reduction | no | yes | no | yes |
+| Convert Image Format | yes | yes | no | yes |
+| Rescale | yes | yes | no | yes |
+
+### Other Operations
+
 | Algorithm | CPU | CUDA | PVA | VIC |
 | --------- | --- | ---- | --- | --- |
 | Box Filter | yes | yes | yes | no |
@@ -95,8 +105,6 @@ sudo apt install vpi1-demos
 | Dilate | yes | yes | no | no |
 | Convolution | yes | yes | yes | no |
 | Seperable Convolution | yes | yes | yes | no |
-| Convert Image Format | yes | yes | no | yes |
-| Rescale | yes | yes | no | yes |
 | Remap | yes | yes | no | no |
 | Perspective Warp | yes | yes | no | no |
 | FFT | yes | yes | no | no |
@@ -105,7 +113,6 @@ sudo apt install vpi1-demos
 | Stereo Disparity Estimator | yes | yes | yes | no |
 | KLT Feature Tracker | yes | yes | yes | no |
 | Harris Corner Detector | yes | yes | yes | no |
-| Temporal Noise Reduction | no | yes | no | yes |
 | Pyramidal LK Optical Flow | yes | yes | no | no |
 | Image Histogram | yes | yes | no | no |
 | Equalize Histogram | yes | yes | no | no |
@@ -113,6 +120,3 @@ sudo apt install vpi1-demos
 | Min/Max Location | yes | yes | no | no |
 
   - To find more information about what these operations do and how they work, go to [Nvidia VPI1.2 Algorithms](https://docs.nvidia.com/vpi/1.2/algorithms.html).
-
-
-

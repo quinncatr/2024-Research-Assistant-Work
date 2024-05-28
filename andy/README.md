@@ -1,3 +1,4 @@
+# Nvidia Jetson Nano Research
 ## Jetson Nano Setup
 ### About Jetson Nano
 - The Nvidia Jetson Nano is a small Raspberry Pi type machine to experiment with machine learning, GPU utilization and more. The Nano is a few years old and as a result, is only compatible with older versions of most software needed.

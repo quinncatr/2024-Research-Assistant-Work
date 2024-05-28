@@ -52,7 +52,7 @@
 ## Using TensorFlow
 ### Initial Setup
 - Because the Jetson Nano is slightly outdated, the most recent version of Keras supported is 2.6. Since Tensorflow automatically comes with a newer version than 2.6, it must be downgraded. To downgrade Keras, run `pip install keras==2.6` in the Nano's terminal.
-- Once TensorFlow is installed, follow the quickstart tutorial [here](https://www.tensorflow.org/tutorials/quickstart/beginner).
+- Once TensorFlow is installed, follow the quickstart [tutorial](https://www.tensorflow.org/tutorials/quickstart/beginner).
   - Note: If this tutorial throws an error about the GPU memory being maxed out, add this code block to reallocate memory.
  ```
     device = tf.config.list_physical_devices('GPU')
@@ -78,7 +78,41 @@ sudo apt update
 sudo apt install libnvvpi1 vpi1-dev vpi1-samples
 sudo apt install vpi1-demos
 ```
+- Examples of how VPI can be used can be found in `/opt/nvidia/vpi1`
 ### VPI 1.2 Operations
-- 
+- Despite being an older version of VPI, many operations are available and supported in both C++ and Python.
+- For more information on how VPI works read the [Nvidia VPI architecture document](https://docs.nvidia.com/vpi/1.2/architecture.html).
+- The following table lists the algorithms inlcuded in Nvidia VPI along with the backends that they can be run on.
+  - Note: The table is only compatibale with a Jetson Nano running VPI 1.2.
+
+| Algorithm | CPU | CUDA | PVA | VIC |
+| --------- | --- | ---- | --- | --- |
+| Box Filter | yes | yes | yes | no |
+| Bilateral Filter | yes | yes | no | no |
+| Gaussian Filter | yes | yes | yes | no |
+| Laplacian Pyramid Generator | yes | yes | no | no |
+| Erode | yes | yes | no | no |
+| Dilate | yes | yes | no | no |
+| Convolution | yes | yes | yes | no |
+| Seperable Convolution | yes | yes | yes | no |
+| Convert Image Format | yes | yes | no | yes |
+| Rescale | yes | yes | no | yes |
+| Remap | yes | yes | no | no |
+| Perspective Warp | yes | yes | no | no |
+| FFT | yes | yes | no | no |
+| Inverse FFT | yes | yes | no | no |
+| Lens Distortion Correction | yes | yes | no | no |
+| Stereo Disparity Estimator | yes | yes | yes | no |
+| KLT Feature Tracker | yes | yes | yes | no |
+| Harris Corner Detector | yes | yes | yes | no |
+| Temporal Noise Reduction | no | yes | no | yes |
+| Pyramidal LK Optical Flow | yes | yes | no | no |
+| Image Histogram | yes | yes | no | no |
+| Equalize Histogram | yes | yes | no | no |
+| Background Subtractor | yes | yes | no | no |
+| Min/Max Location | yes | yes | no | no |
+
+  - To find more information about what these operations do and how they work, go to [Nvidia VPI1.2 Algorithms](https://docs.nvidia.com/vpi/1.2/algorithms.html).
+
 
 

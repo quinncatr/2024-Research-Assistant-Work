@@ -61,3 +61,9 @@
 ```
   - By default, Tensorflow has a fixed amount of GPU memory it can use. The code above allows TensorFlow to dynamically allocate GPU memory, which allows it to increase the amount of memory it uses if the dataset takes up more than the default amount. 
   - Note: If the tutorial core dumps, a different version of numpy may be needed. The most stable version for the Nano is 1.19.4. To install the stable version of numpy, run `pip3 install numpy==1.19.4` in the Nano's terminal.
+
+## VPI (Video Programming Interface)
+### Installation
+- Nvidia VPI is included in the Jetpack SDK. Jetpack 4.6.1 comes with VPI 1.2 already installed
+
+

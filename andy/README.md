@@ -121,3 +121,9 @@ sudo apt install vpi1-demos
 | Min/Max Location | yes | yes | no | no |
 
   - To find more information about what these operations do and how they work, go to [Nvidia VPI1.2 Algorithms](https://docs.nvidia.com/vpi/1.2/algorithms.html).
+
+## JTOP
+### JTOP overview
+- JTOP is a program that can be run in the terminal to dsiplay data about the Jetson Nano hardware including CPU, GPU, VIC, etc usage and temperatures, along with individual cores usage and temperatures. It has many more readings to show the state of the Jetson Nano
+### Installing JTOP
+- To install JTOP, make sure PIP is installed along with python3. Once those are installed run `sudo pip3 install -U jetson-stats` in the terminal. You may need to logout and/or reboot the Nano before running JTOP. Once the Nano has been rebooted, simply run `jtop` in the terminal.

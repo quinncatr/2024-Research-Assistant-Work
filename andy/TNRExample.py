@@ -51,6 +51,51 @@ with backend:
 
 #--------------------------------------------------------------
 # Main processing loop
+startUserChip = timer()
+print("Starting noise reduction.")
+curFrame = 0
+while True:
+    curFrame+=1
+    #print("Frame: {}".format(curFrame))
+
+    # Read one input frame
+    ret, cvFrame = inVideo.read()
+    if not ret:
+        break
+
+    # Convert it to NV12_ER format to be used by VPI
+    with vpi.Backend.CUDA:
+        frame = vpi.asimage(cvFrame).convert(vpi.Format.NV12_ER)
+
+    # Retrieve the corresponding denoised frame
+    denoised = tnr(frame, preset=vpi.TNRPreset.INDOOR_MEDIUM_LIGHT, strength=1)
+
+    # Convert it to RGB8 for output using the CUDA backend
+    with vpi.Backend.CUDA:
+        denoised = denoised.convert(vpi.Format.RGB8)
+
+    # Write the denoised frame to the output video
+    with denoised.rlock():
+        outVideo.write(denoised.cpu())
+
+endUserChip = timer()
+elapsedTimeUserChip = endUserChip - startUserChip
+print("Noise reduction complete.")
+print ("Time to complete using " + args.backend + ": " + str(elapsedTimeUserChip) + " seconds.")
+
+
+
+# Create the TNR object using the backend specified by the user
+if backend == vpi.Backend.CUDA:
+    backend = vpi.Backend.VIC
+else:
+    backend = vpi.Backend.Cuda
+
+with backend:
+    tnr = vpi.TemporalNoiseReduction(inSize, vpi.Format.NV12_ER)
+
+#--------------------------------------------------------------
+# Main processing loop
 start = timer()
 print("Starting noise reduction.")
 curFrame = 0
@@ -82,5 +127,10 @@ end = timer()
 elapsedTime = end - start
 print("Noise reduction complete.")
 print ("Elapsed Time: " + str(elapsedTime) + " seconds.")
+
+
+
+
+
 
 # vim: ts=8:sw=4:sts=4:et:ai

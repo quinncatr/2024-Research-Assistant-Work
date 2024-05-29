@@ -1,7 +1,6 @@
 import sys
 import vpi
 import numpy as np
-#Must install PIL from command line (sudo pip3 install pillow)
 from PIL import Image
 from argparse import ArgumentParser
 from jtop import jtop

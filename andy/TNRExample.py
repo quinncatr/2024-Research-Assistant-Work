@@ -52,7 +52,7 @@ with backend:
 #--------------------------------------------------------------
 # Main processing loop
 startUserChip = timer()
-print("Starting noise reduction.")
+print("Starting noise reduction on" + args.backend + ".")
 curFrame = 0
 while True:
     curFrame+=1
@@ -80,7 +80,7 @@ while True:
 
 endUserChip = timer()
 elapsedTimeUserChip = endUserChip - startUserChip
-print("Noise reduction complete.")
+print("Noise reduction on " + args.backend + " complete.")
 print ("Time to complete using " + args.backend + ": " + str(elapsedTimeUserChip) + " seconds.")
 
 
@@ -88,16 +88,18 @@ print ("Time to complete using " + args.backend + ": " + str(elapsedTimeUserChip
 # Create the TNR object using the backend specified by the user
 if backend == vpi.Backend.CUDA:
     backend = vpi.Backend.VIC
+    chipType = "vic"
 else:
-    backend = vpi.Backend.Cuda
+    backend = vpi.Backend.CUDA
+    chipType = "cuda"
 
 with backend:
     tnr = vpi.TemporalNoiseReduction(inSize, vpi.Format.NV12_ER)
 
 #--------------------------------------------------------------
 # Main processing loop
-start = timer()
-print("Starting noise reduction.")
+startOtherChip = timer()
+print("Starting noise reduction on " + chipType + ".")
 curFrame = 0
 while True:
     curFrame+=1
@@ -123,10 +125,10 @@ while True:
     with denoised.rlock():
         outVideo.write(denoised.cpu())
 
-end = timer()
-elapsedTime = end - start
-print("Noise reduction complete.")
-print ("Elapsed Time: " + str(elapsedTime) + " seconds.")
+endOtherChip = timer()
+elapsedTimeOtherChip = endOtherChip - startOtherChip
+print("Noise reduction on " + chipType + " complete.")
+print ("Time to complete using " + chipType + ": " + str(elapsedTimeOtherChip) + "seconds")
 
 
 

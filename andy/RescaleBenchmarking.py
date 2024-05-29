@@ -4,9 +4,13 @@ import numpy as np
 #Must install PIL from command line (sudo pip3 install pillow)
 from PIL import Image
 from argparse import ArgumentParser
+from jtop import jtop
+
+with jtop() as jetson:
+    #print(jetson.stats)
 
 # Parse command line arguments
-parser = ArgumentParser()
+    parser = ArgumentParser()
 parser.add_argument('backend', choices=['cpu','cuda','vic'],
                     help='Backend to be used for processing')
 

@@ -4,11 +4,14 @@ import vpi
 import numpy as np
 from argparse import ArgumentParser
 from timeit import default_timer as timer
+from jtop import jtop
+
+with jtop() as jetson:
 
 # ----------------------------
 # Parse command line arguments
 
-parser = ArgumentParser()
+    parser = ArgumentParser()
 parser.add_argument('backend', choices=['cuda','vic'],
                     help='Backend to be used for processing')
 
@@ -149,13 +152,16 @@ precentDifference = (abs(elapsedTimeUserChip - elapsedTimeOtherChip) / ((elapsed
 
 if difference < 0:
     if chipType == "vic":
-        print("Vic completed Temporal Noise Reduction " + str(difference) + " seconds (" + str(precentDifference) + "%) faster than " + str(args.backend) + ".")
+        print("Vic completed Temporal Noise Reduction " + str(difference) + " seconds (" + str(precentDifference) + "%) faster than " + str(args.backend) + ".\n")
     else:
-        print("Cuda completed Temporal Noise Reduction " + str(-difference) + " seconds (" + str(precentDifference) + "%) faster than " + str(args.backend) + ".")
+        print("Cuda completed Temporal Noise Reduction " + str(-difference) + " seconds (" + str(precentDifference) + "%) faster than " + str(args.backend) + ".\n")
 else :
     if chipType == "vic":
-        print("Vic completed Temporal Noise Reduction " + str(difference) + " seconds (" + str(precentDifference) + "%) slower than " + str(args.backend) + ".")
+        print("Vic completed Temporal Noise Reduction " + str(difference) + " seconds (" + str(precentDifference) + "%) slower than " + str(args.backend) + ".\n")
     else:
-        print("Cuda completed Temporal Noise Reduction " + str(-difference) + " seconds (" + str(precentDifference) + "%) slower than " + str(args.backend) + ".")
+        print("Cuda completed Temporal Noise Reduction " + str(-difference) + " seconds (" + str(precentDifference) + "%) slower than " + str(args.backend) + ".\n")
+
+
+#print(jetson.stats)
 
 # vim: ts=8:sw=4:sts=4:et:ai

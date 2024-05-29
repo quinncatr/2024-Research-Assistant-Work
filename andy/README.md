@@ -1,7 +1,8 @@
+# Nvidia Jetson Nano Research
 ## Jetson Nano Setup
 ### About Jetson Nano
 - The Nvidia Jetson Nano is a small Raspberry Pi type machine to experiment with machine learning, GPU utilization and more. The Nano is a few years old and as a result, is only compatible with older versions of most software needed.
-- The newest supported verion of Jetpack for the Nano is Jetpack 4.6.1. All instructions in this document work for the Nvidia Jetson Nano running Jetpack 4.6.1. Any other machine or Jetpack version likley will have different steps than the ones laid out below.
+- The newest supported version of Jetpack for the Nano is Jetpack 4.6.1. All instructions in this document work for the Nvidia Jetson Nano running Jetpack 4.6.1. Any other machine or Jetpack version likley will have different steps than the ones laid out below.
 ### About Jetpack:
 - The Nvidia Jetpack SDK is a software package that includes a linux based operating system in addition to various tools that can take advantage of the Nvidia Jetson Nano's CPU, GPU, and accelerators. Because Jetpack includes an operating system, it can be downloaded and used to boot the Nano. Once booted, the Nano will have an operating system, various development packages and tools, and examples of how those tools can be used.
 - One caveat of the the Jetson Nano is that it does not support the newest versions of most software. For example, Jetpack 6 is not supported so Jetpack 4 is needed. In addition, the newest version of VScode that is supported is 1.83. 
@@ -19,6 +20,8 @@
 - [Getting Started with Nvidia Jetson Nano](https://developer.nvidia.com/embedded/learn/get-started-jetson-nano-devkit)
 - [Nvidia Jetson Nano Supported Components](https://developer.download.nvidia.com/assets/embedded/secure/jetson/Nano/docs/Jetson_Nano_Supported_Components_List_NV.pdf?76ypPONhPK8pnVWKKmtrcDs8GSSXFzGyO5o03ipRp0qyxzI9_ahJyPqFqwQqMsE_j49n7W-NixTZ_dqhQBKy0qT6Tm1nbsY9KRl-ZnN4kLiqOXWDAjaSzrse1t7U2wanxvJOOMoAg7xmbNcomI3d5rtrpKlv80qgbpkyCsAGFRO4SVbpcT4_uxlogxHmtV9wIHQu&t=eyJscyI6InJlZiIsImxzZCI6IlJFRi1kdWNrZHVja2dvLmNvbS8ifQ==)
 - [Nvidia Jetson Nano Developer Kit User Guide](https://developer.download.nvidia.com/assets/embedded/secure/jetson/Nano/docs/NV_Jetson_Nano_Developer_Kit_User_Guide.pdf?RiV_dF65QGf4OFgHiKstg8sPxBmWBNHMvXjOzp87KE9QISQQpuBoE9b8Zyh5RCTVXABr_97DdoGWEmfUdL3KXSOmAER0PmRvZ3Vdsp-U98lsIBCj_l_f9lp5yqGdUGx2Z6ROhlbcvf2G3Sfxt6RQgidEeUdz7Vr1dQg8276fuhcaNFgYpNP45hslUgP3Rn4dG7s=&t=eyJscyI6InJlZiIsImxzZCI6IlJFRi1kdWNrZHVja2dvLmNvbS8ifQ==)
+- [Nvidia Jetson Webinar Video Series](https://www.youtube.com/playlist?list=PL5B692fm6--tMDTpxk_5akMWlyq2n-qmW)
+- [RidgeRun Developer Jetson Nano Resources](https://developer.ridgerun.com/wiki/index.php/Category:JetsonNano)
   - Note: Some of these links have files that are not compatible with the Nano. For downloading supported software, only use information above. 
 
 ## SSH into Jetson Nano
@@ -52,12 +55,77 @@
 ## Using TensorFlow
 ### Initial Setup
 - Because the Jetson Nano is slightly outdated, the most recent version of Keras supported is 2.6. Since Tensorflow automatically comes with a newer version than 2.6, it must be downgraded. To downgrade Keras, run `pip install keras==2.6` in the Nano's terminal.
-- Once TensorFlow is installed, follow the quickstart tutorial [here](https://www.tensorflow.org/tutorials/quickstart/beginner).
-  - Note: If this tutorial throws an error about the GPU memory being maxed out, add this code block to reallocates memory.
+- Once TensorFlow is installed, follow the quickstart [tutorial](https://www.tensorflow.org/tutorials/quickstart/beginner).
+  - Note: If this tutorial throws an error about the GPU memory being maxed out, add this code block to reallocate memory.
  ```
     device = tf.config.list_physical_devices('GPU')
     tf.config.experimental.set_memory_growth(device[0], True)
     tf.config.experimental.set_virtual_device_configuration(device[0], [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=1024)])
 ```
-  - By default, Tensorflow has a certain amount of GPU memory it uses. This code allows TensorFlow to dynamically allocate GPU memory, which allows it to increase the amount of memory it uses if the dataset takes up more than the default amount. 
+  - By default, Tensorflow has a fixed amount of GPU memory it can use. The code above allows TensorFlow to dynamically allocate GPU memory, which allows it to increase the amount of memory it uses if the dataset takes up more than the default amount. 
   - Note: If the tutorial core dumps, a different version of numpy may be needed. The most stable version for the Nano is 1.19.4. To install the stable version of numpy, run `pip3 install numpy==1.19.4` in the Nano's terminal.
+
+## VPI (Video Programming Interface)
+### Installation
+- Due to the Jetson Nano running Jetpack 4.6.1, VPI 1.2 is the newest supported version of VPI. Jetpack 4.6.1 includes Ubuntu 18.04, which determines the version of VPI that can be used.
+- To install VPI 1.2 on the Nano, run the following commands in the terminal. 
+  - Note: These commands will only work for Jetpack 4.6.1 running Ubuntu 18.04
+```
+sudo apt-get update
+sudo apt-get install libnvvpi1
+sudo apt install gnupg
+sudo apt-key adv --fetch-key https://repo.download.nvidia.com/jetson/jetson-ota-public.asc
+sudo apt install software-properties-common
+sudo add-apt-repository 'deb https://repo.download.nvidia.com/jetson/x86_64 bionic r32.7'
+sudo apt update
+sudo apt install libnvvpi1 vpi1-dev vpi1-samples
+sudo apt install vpi1-demos
+```
+- Examples of how VPI can be used can be found in `/opt/nvidia/vpi1`
+### VPI 1.2 Operations
+- Despite being an older version of VPI, many operations are available and supported in both C++ and Python.
+- For more information on how VPI works read the [Nvidia VPI architecture document](https://docs.nvidia.com/vpi/1.2/architecture.html).
+- The following table lists the algorithms inlcuded in Nvidia VPI along with the backends that they can be run on.
+  - Note: The table is only compatibale with a Jetson Nano running VPI 1.2.
+
+### VIC Operations
+
+| Algorithm | CPU | CUDA | PVA | VIC |
+| --------- | --- | ---- | --- | --- |
+| Temporal Noise Reduction | no | yes | no | yes |
+| Convert Image Format | yes | yes | no | yes |
+| Rescale | yes | yes | no | yes |
+
+### Other Operations
+
+| Algorithm | CPU | CUDA | PVA | VIC |
+| --------- | --- | ---- | --- | --- |
+| Box Filter | yes | yes | yes | no |
+| Bilateral Filter | yes | yes | no | no |
+| Gaussian Filter | yes | yes | yes | no |
+| Laplacian Pyramid Generator | yes | yes | no | no |
+| Erode | yes | yes | no | no |
+| Dilate | yes | yes | no | no |
+| Convolution | yes | yes | yes | no |
+| Seperable Convolution | yes | yes | yes | no |
+| Remap | yes | yes | no | no |
+| Perspective Warp | yes | yes | no | no |
+| FFT | yes | yes | no | no |
+| Inverse FFT | yes | yes | no | no |
+| Lens Distortion Correction | yes | yes | no | no |
+| Stereo Disparity Estimator | yes | yes | yes | no |
+| KLT Feature Tracker | yes | yes | yes | no |
+| Harris Corner Detector | yes | yes | yes | no |
+| Pyramidal LK Optical Flow | yes | yes | no | no |
+| Image Histogram | yes | yes | no | no |
+| Equalize Histogram | yes | yes | no | no |
+| Background Subtractor | yes | yes | no | no |
+| Min/Max Location | yes | yes | no | no |
+
+  - To find more information about what these operations do and how they work, go to [Nvidia VPI1.2 Algorithms](https://docs.nvidia.com/vpi/1.2/algorithms.html).
+
+## JTOP
+### JTOP overview
+- JTOP is a program that can be run in the terminal to dsiplay data about the Jetson Nano hardware including CPU, GPU, VIC, etc usage and temperatures, along with individual cores usage and temperatures. It has many more readings to show the state of the Jetson Nano
+### Installing JTOP
+- To install JTOP, make sure PIP is installed along with python3. Once those are installed run `sudo pip3 install -U jetson-stats` in the terminal. You may need to logout and/or reboot the Nano before running JTOP. Once the Nano has been rebooted, simply run `jtop` in the terminal.

@@ -52,7 +52,7 @@ with backend:
 #--------------------------------------------------------------
 # Main processing loop
 startUserChip = timer()
-print("Starting noise reduction on" + args.backend + ".")
+print("Starting noise reduction on " + args.backend + ".")
 curFrame = 0
 while True:
     curFrame+=1
@@ -81,9 +81,32 @@ while True:
 endUserChip = timer()
 elapsedTimeUserChip = endUserChip - startUserChip
 print("Noise reduction on " + args.backend + " complete.")
-print ("Time to complete using " + args.backend + ": " + str(elapsedTimeUserChip) + " seconds.")
+print ("Time to complete using " + args.backend + ": " + str(elapsedTimeUserChip) + " seconds.\n")
 
 
+# -----------------------------
+# Repeating same process for the other chip
+
+# -----------------------------
+# Open input and output videos
+
+inVideo = cv2.VideoCapture(args.input)
+
+if int(cv2.__version__.split('.')[0]) >= 3:
+    extOutputVideo = '.mp4'
+    fourcc = cv2.VideoWriter_fourcc(*'avc1')
+    inSize = (int(inVideo.get(cv2.CAP_PROP_FRAME_WIDTH)), int(inVideo.get(cv2.CAP_PROP_FRAME_HEIGHT)))
+    fps = inVideo.get(cv2.CAP_PROP_FPS)
+else:
+    # MP4 support with OpenCV-2.4 has issues, we'll use
+    # avi/mpeg instead.
+    extOutputVideo = '.avi'
+    fourcc = cv2.cv.CV_FOURCC('M','P','E','G')
+    inSize = (int(inVideo.get(cv2.cv.CV_CAP_PROP_FRAME_WIDTH)), int(inVideo.get(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT)))
+    fps = inVideo.get(cv2.cv.CV_CAP_PROP_FPS)
+
+outVideo = cv2.VideoWriter('denoised_python'+str(sys.version_info[0])+'_'+args.backend+extOutputVideo,
+                            fourcc, fps, inSize)
 
 # Create the TNR object using the backend specified by the user
 if backend == vpi.Backend.CUDA:
@@ -128,11 +151,6 @@ while True:
 endOtherChip = timer()
 elapsedTimeOtherChip = endOtherChip - startOtherChip
 print("Noise reduction on " + chipType + " complete.")
-print ("Time to complete using " + chipType + ": " + str(elapsedTimeOtherChip) + "seconds")
-
-
-
-
-
+print ("Time to complete using " + chipType + ": " + str(elapsedTimeOtherChip) + " seconds")
 
 # vim: ts=8:sw=4:sts=4:et:ai

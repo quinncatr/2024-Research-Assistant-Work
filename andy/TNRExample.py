@@ -155,16 +155,19 @@ print ("Time to complete using " + chipType + ": " + str(elapsedTimeOtherChip) +
 
 # -----------------------------
 # Data about the differences in speeds between chips
+
 difference = elapsedTimeOtherChip - elapsedTimeUserChip
+precentDifference = (abs(elapsedTimeUserChip - elapsedTimeOtherChip) / ((elapsedTimeUserChip + elapsedTimeOtherChip) / 2)) * 100
+
 if difference < 0:
     if chipType == "vic":
-        print("Vic is " + str(difference) + " seconds faster than " + str(args.backend) + ".")
+        print("Vic completed Temporal Noise Reduction " + str(difference) + " seconds (" + str(precentDifference) + "%) faster than " + str(args.backend) + ".")
     else:
-        print("Cuda is " + str(-difference) + " seconds faster than " + str(args.backend) + ".")
+        print("Cuda completed Temporal Noise Reduction " + str(-difference) + " seconds (" + str(precentDifference) + "%) faster than " + str(args.backend) + ".")
 else :
     if chipType == "vic":
-        print("Vic is " + str(difference) + " seconds slower than " + str(args.backend) + ".")
+        print("Vic completed Temporal Noise Reduction " + str(difference) + " seconds (" + str(precentDifference) + "%) slower than " + str(args.backend) + ".")
     else:
-        print("Cuda is " + str(-difference) + " seconds slower than " + str(args.backend) + ".")
+        print("Cuda completed Temporal Noise Reduction " + str(-difference) + " seconds (" + str(precentDifference) + "%) slower than " + str(args.backend) + ".")
 
 # vim: ts=8:sw=4:sts=4:et:ai

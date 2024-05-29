@@ -151,6 +151,20 @@ while True:
 endOtherChip = timer()
 elapsedTimeOtherChip = endOtherChip - startOtherChip
 print("Noise reduction on " + chipType + " complete.")
-print ("Time to complete using " + chipType + ": " + str(elapsedTimeOtherChip) + " seconds")
+print ("Time to complete using " + chipType + ": " + str(elapsedTimeOtherChip) + " seconds\n")
+
+# -----------------------------
+# Data about the differences in speeds between chips
+difference = elapsedTimeOtherChip - elapsedTimeUserChip
+if difference < 0:
+    if chipType == "vic":
+        print("Vic is " + str(difference) + " seconds faster than " + str(args.backend) + ".")
+    else:
+        print("Cuda is " + str(-difference) + " seconds faster than " + str(args.backend) + ".")
+else :
+    if chipType == "vic":
+        print("Vic is " + str(difference) + " seconds slower than " + str(args.backend) + ".")
+    else:
+        print("Cuda is " + str(-difference) + " seconds slower than " + str(args.backend) + ".")
 
 # vim: ts=8:sw=4:sts=4:et:ai

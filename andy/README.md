@@ -129,6 +129,10 @@ sudo apt install vpi1-demos
 - JTOP is a program that can be run in the terminal to dsiplay data about the Jetson Nano hardware including CPU, GPU, VIC, etc usage and temperatures, along with individual cores usage and temperatures. It has many more readings to show the state of the Jetson Nano
 ### Installing JTOP
 - To install JTOP, make sure PIP is installed along with python3. Once those are installed run `sudo pip3 install -U jetson-stats` in the terminal. You may need to logout and/or reboot the Nano before running JTOP. Once the Nano has been rebooted, simply run `jtop` in the terminal.
+### Using JTOP in a python program
+- JTOP is capable of being imported into a python program and displaying a text summary of the Nanos stats
+- To import, add `from jtop import jtop` to the program. Then add `with jtop90 as jetson:` to call jtop methods on the jetson.
+  - For example, once the imports are complete `print(jetson.stats)` displays CPU, GPU and accelerator data like usage, temps, power draw, etc in the terminal when the program is run.
 
 ## Initial VPI Benchmakring
 - In order to learn more about the Nano and how its various accelerators work, initial benchmarking must be done.

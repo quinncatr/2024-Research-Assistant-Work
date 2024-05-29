@@ -5,6 +5,7 @@ import numpy as np
 from PIL import Image
 from argparse import ArgumentParser
 from jtop import jtop
+from timeit import default_timer as timer
 
 with jtop() as jetson:
     #print(jetson.stats)
@@ -29,6 +30,7 @@ else:
 
 # Load input into a vpi.Image
 input = vpi.asimage(np.asarray(Image.open(args.input)))
+
 
 # Using the chosen backend,
 with backend:

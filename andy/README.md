@@ -130,10 +130,9 @@ sudo apt install vpi1-demos
 ### Installing JTOP
 - To install JTOP, make sure PIP is installed along with python3. Once those are installed run `sudo pip3 install -U jetson-stats` in the terminal. You may need to logout and/or reboot the Nano before running JTOP. Once the Nano has been rebooted, simply run `jtop` in the terminal.
 
-## Initial Benchmakring
-### VPI Benchmarking
+## Initial VPI Benchmakring
 - In order to learn more about the Nano and how its various accelerators work, initial benchmarking must be done.
-#### Temporal Noise Reduction Benchmarking
+### Temporal Noise Reduction Benchmarking
 - The `TNRBenchmarking.py` file uses the sample temporal noise reduction program supplyed by VPI with added benchmarking features to compare the speed at which CUDA and VIC complete a basic temporal noise reduction program.
   - The added features keep track of elapsed time and report associated data.
 - `TNRBenchmarking.py` provides data about which accelorator is used, how fast it completed, and how fast it completed relative to the other accelorators.

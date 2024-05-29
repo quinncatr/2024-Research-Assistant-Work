@@ -33,6 +33,7 @@ input = vpi.asimage(np.asarray(Image.open(args.input)))
 
 
 # Using the chosen backend,
+start = timer()
 with backend:
     # First convert input to NV12_ER.
     # We're overriding the default backend with CUDA.
@@ -43,8 +44,11 @@ with backend:
 
     # Convert result back to input's format
     output = temp.convert(input.format, backend=vpi.Backend.CUDA)
+end = timer()
 
 # Save result to disk
 Image.fromarray(output.cpu()).save('scaled_python'+str(sys.version_info[0])+'_'+args.backend+'.png')
+
+print("Rescaling was completed in " + str(end - start) + " seconds.")
 
 # vim: ts=8:sw=4:sts=4:et:ai

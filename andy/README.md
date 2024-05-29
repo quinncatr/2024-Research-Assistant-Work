@@ -152,3 +152,6 @@ python TNRBenchmarking.py <accelorator> <input video filepath>
 python TNRBenchmarking.py cuda ../../../../opt/nvidia/vpi1/samples/assets/noisy.mp4
 ```
 - Note: This program will create a new mp4 file and store it in the directory that the program was run from.
+
+### Rescaling Benchmarking
+- To benchmark the `Rescaling.py` sample, pillow must be installed. to do this, run ` sudo pip3 install pillow`.

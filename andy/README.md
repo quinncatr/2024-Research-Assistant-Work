@@ -129,3 +129,23 @@ sudo apt install vpi1-demos
 - JTOP is a program that can be run in the terminal to dsiplay data about the Jetson Nano hardware including CPU, GPU, VIC, etc usage and temperatures, along with individual cores usage and temperatures. It has many more readings to show the state of the Jetson Nano
 ### Installing JTOP
 - To install JTOP, make sure PIP is installed along with python3. Once those are installed run `sudo pip3 install -U jetson-stats` in the terminal. You may need to logout and/or reboot the Nano before running JTOP. Once the Nano has been rebooted, simply run `jtop` in the terminal.
+
+## Initial Benchmakring
+### VPI Benchmarking
+- In order to learn more about the Nano and how its various accelerators work, initial benchmarking must be done.
+#### Temporal Noise Reduction Benchmarking
+- The `TNRBenchmarking.py` file uses the sample temporal noise reduction program supplyed by VPI with added benchmarking features to compare the speed at which CUDA and VIC complete a basic temporal noise reduction program.
+  - The added features keep track of elapsed time and report associated data.
+- `TNRBenchmarking.py` provides data about which accelorator is used, how fast it completed, and how fast it completed relative to the other accelorators.
+- To run `TNRBenchmarking,py` run the following commands in the directory where the program is located.
+
+```
+python TNRBenchmarking.py <accelorator> <input video filepath>
+```
+  - where `<accelorator>` is the specific accelorator you want to use and `<input video filepath>` is the filepath where the original video is located.
+- Example command:
+
+```
+python TNRBenchmarking.py cuda ../../../../opt/nvidia/vpi1/samples/assets/noisy.mp4
+```
+- Note: This program will create a new mp4 file and store it in the directory that the program was run from.

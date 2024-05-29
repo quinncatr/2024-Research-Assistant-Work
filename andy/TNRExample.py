@@ -52,10 +52,11 @@ with backend:
 #--------------------------------------------------------------
 # Main processing loop
 start = timer()
+print("Starting noise reduction.")
 curFrame = 0
 while True:
     curFrame+=1
-    print("Frame: {}".format(curFrame))
+    #print("Frame: {}".format(curFrame))
 
     # Read one input frame
     ret, cvFrame = inVideo.read()
@@ -76,8 +77,10 @@ while True:
     # Write the denoised frame to the output video
     with denoised.rlock():
         outVideo.write(denoised.cpu())
+
 end = timer()
 elapsedTime = end - start
+print("Noise reduction complete.")
 print ("Elapsed Time: " + str(elapsedTime) + " seconds.")
 
 # vim: ts=8:sw=4:sts=4:et:ai

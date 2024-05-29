@@ -3,6 +3,7 @@ import sys
 import vpi
 import numpy as np
 from argparse import ArgumentParser
+from timeit import default_timer as timer
 
 # ----------------------------
 # Parse command line arguments
@@ -50,6 +51,7 @@ with backend:
 
 #--------------------------------------------------------------
 # Main processing loop
+start = timer()
 curFrame = 0
 while True:
     curFrame+=1
@@ -74,5 +76,8 @@ while True:
     # Write the denoised frame to the output video
     with denoised.rlock():
         outVideo.write(denoised.cpu())
+end = timer()
+elapsedTime = end - start
+print ("Elapsed Time: " + str(elapsedTime) + " seconds.")
 
 # vim: ts=8:sw=4:sts=4:et:ai

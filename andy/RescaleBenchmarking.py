@@ -42,47 +42,30 @@ print("Rescaling using VIC was completed in " + str(end - start) + " seconds.\n"
 
 with vpi.Backend.CPU:
     start = timer()
-    # First convert input to NV12_ER.
-    # We're overriding the default backend with CUDA.
     temp = input.convert(vpi.Format.NV12_ER, backend=vpi.Backend.CPU)
 
-    # Rescale the image using the chosen backend
     temp = temp.rescale((input.width//2, input.height//3))
 
-    # Convert result back to input's format
     output = temp.convert(input.format, backend=vpi.Backend.CPU)
     end = timer()
 primaryTime = end - start
 
-# Save result to disk
 Image.fromarray(output.cpu()).save('scaled_python_CPU'+'.jpeg')
 
 print("Rescaling using CPU was completed in " + str(end - start) + " seconds.\n")
 
 with vpi.Backend.CUDA:
     start = timer()
-    # First convert input to NV12_ER.
-    # We're overriding the default backend with CUDA.
     temp = input.convert(vpi.Format.NV12_ER, backend=vpi.Backend.CUDA)
 
-    # Rescale the image using the chosen backend
     temp = temp.rescale((input.width//2, input.height//3))
 
-    # Convert result back to input's format
     output = temp.convert(input.format, backend=vpi.Backend.CUDA)
     end = timer()
 primaryTime = end - start
 
-# Save result to disk
 Image.fromarray(output.cpu()).save('scaled_python_CUDA'+'.jpeg')
 
 print("Rescaling using CUDA was completed in " + str(end - start) + " seconds.\n")
-
-
-
-
-
-
-
 
 # vim: ts=8:sw=4:sts=4:et:ai

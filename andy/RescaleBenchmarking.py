@@ -20,26 +20,6 @@ args = parser.parse_args();
 # Load input into a vpi.Image
 input = vpi.asimage(np.asarray(Image.open(args.input)))
 
-# Using the chosen backend,
-with vpi.Backend.VIC:
-    start = timer()
-    # First convert input to NV12_ER.
-    # We're overriding the default backend with CUDA.
-    temp = input.convert(vpi.Format.NV12_ER, backend=vpi.Backend.CUDA)
-
-    # Rescale the image using the chosen backend
-    temp = temp.rescale((input.width//2, input.height//3))
-
-    # Convert result back to input's format
-    output = temp.convert(input.format, backend=vpi.Backend.CUDA)
-    end = timer()
-vicTime = end - start
-
-# Save result to disk
-Image.fromarray(output.cpu()).save('scaled_python_VIC'+'.jpeg')
-
-print("\nRescaling using VIC was completed in " + str(vicTime) + " seconds.\n")
-
 with vpi.Backend.CPU:
     start = timer()
     temp = input.convert(vpi.Format.NV12_ER, backend=vpi.Backend.CPU)
@@ -68,9 +48,36 @@ Image.fromarray(output.cpu()).save('scaled_python_CUDA'+'.jpeg')
 
 print("Rescaling using CUDA was completed in " + str(cudaTime) + " seconds.\n")
 
-#TODO: add more print statments about differences in seconds and percent
+# Using the chosen backend,
+with vpi.Backend.VIC:
+    start = timer()
+    # First convert input to NV12_ER.
+    # We're overriding the default backend with CUDA.
+    temp = input.convert(vpi.Format.NV12_ER, backend=vpi.Backend.CUDA)
+
+    # Rescale the image using the chosen backend
+    temp = temp.rescale((input.width//2, input.height//3))
+
+    # Convert result back to input's format
+    output = temp.convert(input.format, backend=vpi.Backend.CUDA)
+    end = timer()
+vicTime = end - start
+
+# Save result to disk
+Image.fromarray(output.cpu()).save('scaled_python_VIC'+'.jpeg')
+
+print("\nRescaling using VIC was completed in " + str(vicTime) + " seconds.\n")
+
+
+
+
+
+
+
+
 
 print("-----Comparisons-----\n")
+
 
 vicCpuTimeDiff = abs(vicTime - cpuTime)
 vicCudaTimeDiff = abs(vicTime - cudaTime)
@@ -85,6 +92,10 @@ print("Rescaling using VIC is " + str(vicCudaTimeDiff) + " seconds (" + str(vicC
 print("Rescaling using the CPU is " + str(cpuCudaTimeDiff) + " seconds (" + str(cpuCudaPercentDiff) + "%) slower than using the CUDA.")
 print("Rescaling using the CPU is " + str(vicCpuTimeDiff) + " seconds (" + str(vicCpuPercentDiff) + "%) faster than using VIC.")
 print("Rescaling using CUDA is " + str(vicCudaTimeDiff) + " seconds (" + str(vicCudaPercentDiff) + "%) faster than using the VIC.")
-print("Rescaling using CUDA is " + str(cpuCudaTimeDiff) + " seconds (" + str(cpuCudaPercentDiff) + "%) slower than using the CPU.")
+print("Rescaling using CUDA is " + str(cpuCudaTimeDiff) + " seconds (" + str(cpuCudaPercentDiff) + "%) faster than using the CPU.")
+
+#TODO: Find out why the order of the backends code changes elapsed time
+#TODO: ex. vic last is .0006 seconds, but vic first is .01 seconds
+
 
 # vim: ts=8:sw=4:sts=4:et:ai

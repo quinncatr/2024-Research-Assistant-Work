@@ -17,57 +17,59 @@ parser.add_argument('input',
 
 args = parser.parse_args();
 
-# Load input into a vpi.Image
-input = vpi.asimage(np.asarray(Image.open(args.input)))
-
-with vpi.Backend.CPU:
-    start = timer()
-    temp = input.convert(vpi.Format.NV12_ER, backend=vpi.Backend.CPU)
-
-    temp = temp.rescale((input.width//2, input.height//3))
-
-    output = temp.convert(input.format, backend=vpi.Backend.CPU)
-    end = timer()
-cpuTime = end - start
-
-Image.fromarray(output.cpu()).save('scaled_python_CPU'+'.jpeg')
-
-print("Rescaling using CPU was completed in " + str(cpuTime) + " seconds.\n")
-
 with vpi.Backend.CUDA:
-    start = timer()
+    input = vpi.asimage(np.asarray(Image.open(args.input)))
+    
     temp = input.convert(vpi.Format.NV12_ER, backend=vpi.Backend.CUDA)
-
+    start = timer()
     temp = temp.rescale((input.width//2, input.height//3))
-
-    output = temp.convert(input.format, backend=vpi.Backend.CUDA)
     end = timer()
-cudaTime = end - start
+    output = temp.convert(input.format, backend=vpi.Backend.CUDA)
 
-Image.fromarray(output.cpu()).save('scaled_python_CUDA'+'.jpeg')
+    cudaTime = end - start
+
+#Image.fromarray(output.cpu()).save('scaled_python_CUDA'+'.jpeg')
 
 print("Rescaling using CUDA was completed in " + str(cudaTime) + " seconds.\n")
 
+
 # Using the chosen backend,
 with vpi.Backend.VIC:
-    start = timer()
+    # Load input into a vpi.Image
+    input = vpi.asimage(np.asarray(Image.open(args.input)))
+    
     # First convert input to NV12_ER.
     # We're overriding the default backend with CUDA.
     temp = input.convert(vpi.Format.NV12_ER, backend=vpi.Backend.CUDA)
-
+    start = timer()
     # Rescale the image using the chosen backend
     temp = temp.rescale((input.width//2, input.height//3))
-
+    end = timer()
     # Convert result back to input's format
     output = temp.convert(input.format, backend=vpi.Backend.CUDA)
-    end = timer()
-vicTime = end - start
+    
+    vicTime = end - start
 
 # Save result to disk
-Image.fromarray(output.cpu()).save('scaled_python_VIC'+'.jpeg')
+#Image.fromarray(output.cpu()).save('scaled_python_VIC'+'.jpeg')
 
 print("\nRescaling using VIC was completed in " + str(vicTime) + " seconds.\n")
 
+
+with vpi.Backend.CPU:
+    input = vpi.asimage(np.asarray(Image.open(args.input)))
+
+    temp = input.convert(vpi.Format.NV12_ER, backend=vpi.Backend.CPU)
+    start = timer()
+    temp = temp.rescale((input.width//2, input.height//3))
+    end = timer()
+    output = temp.convert(input.format, backend=vpi.Backend.CPU)
+    
+    cpuTime = end - start
+
+#Image.fromarray(output.cpu()).save('scaled_python_CPU'+'.jpeg')
+
+print("Rescaling using CPU was completed in " + str(cpuTime) + " seconds.\n")
 
 
 
@@ -77,7 +79,6 @@ print("\nRescaling using VIC was completed in " + str(vicTime) + " seconds.\n")
 
 
 print("-----Comparisons-----\n")
-
 
 vicCpuTimeDiff = abs(vicTime - cpuTime)
 vicCudaTimeDiff = abs(vicTime - cudaTime)
@@ -96,6 +97,9 @@ print("Rescaling using CUDA is " + str(cpuCudaTimeDiff) + " seconds (" + str(cpu
 
 #TODO: Find out why the order of the backends code changes elapsed time
 #TODO: ex. vic last is .0006 seconds, but vic first is .01 seconds
-
-
+#TODO: Uncomment save to disk line, just did that so it wouldn't keep creating images all the time
+#TODO: My theory about the bug is that each chip is running at the same speed every time, but 
+#TODO:                      that they get mislabeled in the print 
+#TODO:                      statments depending on which one is first in the code
+#TODO: When run 1 at a time, with the other 2 commented out, results are very very close to each other
 # vim: ts=8:sw=4:sts=4:et:ai

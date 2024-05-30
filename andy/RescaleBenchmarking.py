@@ -54,31 +54,22 @@ Image.fromarray(output.cpu()).save('scaled_python'+str(sys.version_info[0])+'_'+
 print("Rescaling using " + args.backend + " was completed in " + str(end - start) + " seconds.\n")
 
 # Using the second and third backends:
-vicTime = 0
-cpuTime = 0
-cudaTime = 0
 timeList = []
 i = 0
 while i < 2:
     if args.backend == 'cpu':
         cpuTime = primaryTime
         timeList.append(cpuTime)
-        #cudaTime = timeList[0]
-        #vicTime = timeList[1]
         args.backend = 'cuda'
         print("-----CUDA-----")
     elif args.backend == 'cuda':
         cudaTime = primaryTime
         timeList.append(cudaTime)
-        #vicTime = timeList[0]
-        #cpuTime = timeList[1]
         args.backend = 'vic'
         print("-----VIC-----")
     elif args.backend == 'vic':
         vicTime = primaryTime
         timeList.append(vicTime)
-        #cpuTime = timeList[0]
-        #cudaTime = timeList[1]
         args.backend = 'cpu'
         print("-----CPU-----")
     startOtherChip = timer()

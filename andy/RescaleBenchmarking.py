@@ -33,12 +33,12 @@ with vpi.Backend.VIC:
     # Convert result back to input's format
     output = temp.convert(input.format, backend=vpi.Backend.CUDA)
     end = timer()
-primaryTime = end - start
+vicTime = end - start
 
 # Save result to disk
 Image.fromarray(output.cpu()).save('scaled_python_VIC'+'.jpeg')
 
-print("Rescaling using VIC was completed in " + str(end - start) + " seconds.\n")
+print("\nRescaling using VIC was completed in " + str(vicTime) + " seconds.\n")
 
 with vpi.Backend.CPU:
     start = timer()
@@ -48,11 +48,11 @@ with vpi.Backend.CPU:
 
     output = temp.convert(input.format, backend=vpi.Backend.CPU)
     end = timer()
-primaryTime = end - start
+cpuTime = end - start
 
 Image.fromarray(output.cpu()).save('scaled_python_CPU'+'.jpeg')
 
-print("Rescaling using CPU was completed in " + str(end - start) + " seconds.\n")
+print("Rescaling using CPU was completed in " + str(cpuTime) + " seconds.\n")
 
 with vpi.Backend.CUDA:
     start = timer()
@@ -62,10 +62,29 @@ with vpi.Backend.CUDA:
 
     output = temp.convert(input.format, backend=vpi.Backend.CUDA)
     end = timer()
-primaryTime = end - start
+cudaTime = end - start
 
 Image.fromarray(output.cpu()).save('scaled_python_CUDA'+'.jpeg')
 
-print("Rescaling using CUDA was completed in " + str(end - start) + " seconds.\n")
+print("Rescaling using CUDA was completed in " + str(cudaTime) + " seconds.\n")
+
+#TODO: add more print statments about differences in seconds and percent
+
+print("-----Comparisons-----\n")
+
+vicCpuTimeDiff = abs(vicTime - cpuTime)
+vicCudaTimeDiff = abs(vicTime - cudaTime)
+cpuCudaTimeDiff = abs(cpuTime - cudaTime)
+
+vicCpuPercentDiff = (vicCpuTimeDiff / ((vicTime + cpuTime) / 2)) * 100
+vicCudaPercentDiff = (vicCudaTimeDiff / ((vicTime + cudaTime) / 2)) * 100
+cpuCudaPercentDiff = (cpuCudaTimeDiff / ((cudaTime + cpuTime) / 2)) * 100
+
+print("Rescaling using VIC is " + str(vicCpuTimeDiff) + " seconds (" + str(vicCpuPercentDiff) + "%) slower than using the CPU.")
+print("Rescaling using VIC is " + str(vicCudaTimeDiff) + " seconds (" + str(vicCudaPercentDiff) + "%) slower than using CUDA.")
+print("Rescaling using the CPU is " + str(cpuCudaTimeDiff) + " seconds (" + str(cpuCudaPercentDiff) + "%) slower than using the CUDA.")
+print("Rescaling using the CPU is " + str(vicCpuTimeDiff) + " seconds (" + str(vicCpuPercentDiff) + "%) faster than using VIC.")
+print("Rescaling using CUDA is " + str(vicCudaTimeDiff) + " seconds (" + str(vicCudaPercentDiff) + "%) faster than using the VIC.")
+print("Rescaling using CUDA is " + str(cpuCudaTimeDiff) + " seconds (" + str(cpuCudaPercentDiff) + "%) slower than using the CPU.")
 
 # vim: ts=8:sw=4:sts=4:et:ai

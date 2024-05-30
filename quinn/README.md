@@ -28,3 +28,27 @@ sudo pip3 install -U numpy==1.19.4 future==0.18.2 mock==3.0.5 h5py==2.10.0 keras
 ```
 sudo pip3 install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v461 tensorflow
 ```
+
+## VPI (Vision Programming Interface) Nvidia Module
+- The VPI module is already installed on the Nano if you got the Jetpack
+- The following are the operations/algorithms supported by VIC (Video and Image Compositor):
+
+| VIC Algorithms |
+| -------------- |
+| Convert Image Format |
+| Rescale |
+| Remap |
+| Perspective Warp |
+| Lens Distortion Correction |
+| Stereo Disparity Estimator |
+| Temporal Noise Reduction |
+| Image Flip |
+
+- All the backends and the algorithms they work for are listed on: [link](https://docs.nvidia.com/vpi/algorithms.html)
+
+## Convert Image Format/Rescale Example
+- The code listed here: [link](https://github.com/network-synthesis/jetson-toolkit/blob/main/quinn/rescale.py) shows an example of both the Convert Image Format and Rescale algorithms
+- It tests the rescale function with the CPU, CUDA, AND VIC backends and benchmarks their times
+- It also uses the convert image format algorithm to change the intial image (I used a JPEG) to one the program can use in the program's case NV12_ER
+- Rescale.py code is mostly from the Nivida Image Resampling sample code: [link](https://docs.nvidia.com/vpi/sample_rescale.html)
+- From this program, I saw that the VIC is much faster at preforming the rescaling than the CPU or CUDA

@@ -9,13 +9,21 @@ from timeit import default_timer as timer
 #with jtop() as jetson:
     #print(jetson.stats)
 
-# Parse command line arguments
-parser = ArgumentParser()
+def parseArgs():
+    global args
+    # Parse command line arguments
+    parser = ArgumentParser()
 
-parser.add_argument('input',
-                    help='Image to be used as input')
+    parser.add_argument('vicInput',
+                        help='Image to be used as input')
 
-args = parser.parse_args();
+    parser.add_argument('cudaInput',
+                        help='Image to be used as input')
+
+    parser.add_argument('cpuInput',
+                        help='Image to be used as input')
+
+    args = parser.parse_args();
 
 
 def vicOperations():
@@ -23,7 +31,7 @@ def vicOperations():
     # Using the chosen backend,
     with vpi.Backend.VIC:
         # Load input into a vpi.Image
-        input = vpi.asimage(np.asarray(Image.open(args.input)))
+        input = vpi.asimage(np.asarray(Image.open(args.vicInput)))
     
         # First convert input to NV12_ER.
         # We're overriding the default backend with CUDA.
@@ -34,7 +42,7 @@ def vicOperations():
         end = timer()
         # Convert result back to input's format
         output = temp.convert(input.format, backend=vpi.Backend.CUDA)
-    
+        
         vicTime = end - start
 
     # Save result to disk
@@ -45,14 +53,14 @@ def vicOperations():
 def cudaOperations():
     global cudaTime
     with vpi.Backend.CUDA:
-        input = vpi.asimage(np.asarray(Image.open(args.input)))
+        input = vpi.asimage(np.asarray(Image.open(args.cudaInput)))
     
         temp = input.convert(vpi.Format.NV12_ER, backend=vpi.Backend.CUDA)
         start = timer()
         temp = temp.rescale((input.width//2, input.height//3))
         end = timer()
         output = temp.convert(input.format, backend=vpi.Backend.CUDA)
-
+        
         cudaTime = end - start
 
     #Image.fromarray(output.cpu()).save('scaled_python_CUDA'+'.jpeg')
@@ -62,14 +70,14 @@ def cudaOperations():
 def cpuOperations():
     global cpuTime
     with vpi.Backend.CPU:
-        input = vpi.asimage(np.asarray(Image.open(args.input)))
+        input = vpi.asimage(np.asarray(Image.open(args.cpuInput)))
 
         temp = input.convert(vpi.Format.NV12_ER, backend=vpi.Backend.CPU)
         start = timer()
         temp = temp.rescale((input.width//2, input.height//3))
         end = timer()
         output = temp.convert(input.format, backend=vpi.Backend.CPU)
-    
+
         cpuTime = end - start
 
     #Image.fromarray(output.cpu()).save('scaled_python_CPU'+'.jpeg')
@@ -77,9 +85,19 @@ def cpuOperations():
     print("Rescaling using CPU was completed in " + str(cpuTime) + " seconds.\n")
 
 
-cpuOperations()
-vicOperations()
+
+parseArgs()
+
 cudaOperations()
+
+vicOperations()
+
+cpuOperations()
+
+
+
+
+
 
 
 print("-----Comparisons-----\n")

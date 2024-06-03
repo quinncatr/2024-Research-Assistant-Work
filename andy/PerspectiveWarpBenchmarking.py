@@ -5,20 +5,21 @@ import numpy as np
 from math import sin, cos, pi
 from argparse import ArgumentParser
 
-#python3 PerspectiveWarpBenchmarking.py cuda 
+#python3 PerspectiveWarpBenchmarking.py 
 # ../../../../opt/nvidia/vpi1/samples/assets/noisy.mp4
+def parseArgs():
+    global args
+    # ----------------------------
+    # Parse command line arguments
 
-# ----------------------------
-# Parse command line arguments
+    parser = ArgumentParser()
+    #parser.add_argument('backend', choices=['cpu', 'cuda','vic'],
+    #                    help='Backend to be used for processing')
 
-parser = ArgumentParser()
-#parser.add_argument('backend', choices=['cpu', 'cuda','vic'],
-#                    help='Backend to be used for processing')
+    parser.add_argument('input',
+                        help='Input video to be denoised')
 
-parser.add_argument('input',
-                    help='Input video to be denoised')
-
-args = parser.parse_args();
+    args = parser.parse_args();
 
 def loadVideo(backend):
     global inVideo, outVideo
@@ -111,7 +112,7 @@ def runCUDA():
 
 
 
-
+parseArgs()
 runCUDA()
 
 # vim: ts=8:sw=4:sts=4:et:ai

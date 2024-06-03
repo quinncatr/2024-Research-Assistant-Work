@@ -17,66 +17,68 @@ parser.add_argument('input',
 
 args = parser.parse_args();
 
-with vpi.Backend.CUDA:
-    input = vpi.asimage(np.asarray(Image.open(args.input)))
+
+def vicOperations():
+    global vicTime
+    # Using the chosen backend,
+    with vpi.Backend.VIC:
+        # Load input into a vpi.Image
+        input = vpi.asimage(np.asarray(Image.open(args.input)))
     
-    temp = input.convert(vpi.Format.NV12_ER, backend=vpi.Backend.CUDA)
-    start = timer()
-    temp = temp.rescale((input.width//2, input.height//3))
-    end = timer()
-    output = temp.convert(input.format, backend=vpi.Backend.CUDA)
-
-    cudaTime = end - start
-
-#Image.fromarray(output.cpu()).save('scaled_python_CUDA'+'.jpeg')
-
-print("Rescaling using CUDA was completed in " + str(cudaTime) + " seconds.\n")
-
-
-# Using the chosen backend,
-with vpi.Backend.VIC:
-    # Load input into a vpi.Image
-    input = vpi.asimage(np.asarray(Image.open(args.input)))
+        # First convert input to NV12_ER.
+        # We're overriding the default backend with CUDA.
+        temp = input.convert(vpi.Format.NV12_ER, backend=vpi.Backend.CUDA)
+        start = timer()
+        # Rescale the image using the chosen backend
+        temp = temp.rescale((input.width//2, input.height//3))
+        end = timer()
+        # Convert result back to input's format
+        output = temp.convert(input.format, backend=vpi.Backend.CUDA)
     
-    # First convert input to NV12_ER.
-    # We're overriding the default backend with CUDA.
-    temp = input.convert(vpi.Format.NV12_ER, backend=vpi.Backend.CUDA)
-    start = timer()
-    # Rescale the image using the chosen backend
-    temp = temp.rescale((input.width//2, input.height//3))
-    end = timer()
-    # Convert result back to input's format
-    output = temp.convert(input.format, backend=vpi.Backend.CUDA)
+        vicTime = end - start
+
+    # Save result to disk
+    #Image.fromarray(output.cpu()).save('scaled_python_VIC'+'.jpeg')
+
+    print("\nRescaling using VIC was completed in " + str(vicTime) + " seconds.\n")
+
+def cudaOperations():
+    global cudaTime
+    with vpi.Backend.CUDA:
+        input = vpi.asimage(np.asarray(Image.open(args.input)))
     
-    vicTime = end - start
+        temp = input.convert(vpi.Format.NV12_ER, backend=vpi.Backend.CUDA)
+        start = timer()
+        temp = temp.rescale((input.width//2, input.height//3))
+        end = timer()
+        output = temp.convert(input.format, backend=vpi.Backend.CUDA)
 
-# Save result to disk
-#Image.fromarray(output.cpu()).save('scaled_python_VIC'+'.jpeg')
+        cudaTime = end - start
 
-print("\nRescaling using VIC was completed in " + str(vicTime) + " seconds.\n")
+    #Image.fromarray(output.cpu()).save('scaled_python_CUDA'+'.jpeg')
 
+    print("Rescaling using CUDA was completed in " + str(cudaTime) + " seconds.\n")
 
-with vpi.Backend.CPU:
-    input = vpi.asimage(np.asarray(Image.open(args.input)))
+def cpuOperations():
+    global cpuTime
+    with vpi.Backend.CPU:
+        input = vpi.asimage(np.asarray(Image.open(args.input)))
 
-    temp = input.convert(vpi.Format.NV12_ER, backend=vpi.Backend.CPU)
-    start = timer()
-    temp = temp.rescale((input.width//2, input.height//3))
-    end = timer()
-    output = temp.convert(input.format, backend=vpi.Backend.CPU)
+        temp = input.convert(vpi.Format.NV12_ER, backend=vpi.Backend.CPU)
+        start = timer()
+        temp = temp.rescale((input.width//2, input.height//3))
+        end = timer()
+        output = temp.convert(input.format, backend=vpi.Backend.CPU)
     
-    cpuTime = end - start
+        cpuTime = end - start
 
-#Image.fromarray(output.cpu()).save('scaled_python_CPU'+'.jpeg')
+    #Image.fromarray(output.cpu()).save('scaled_python_CPU'+'.jpeg')
 
-print("Rescaling using CPU was completed in " + str(cpuTime) + " seconds.\n")
+    print("Rescaling using CPU was completed in " + str(cpuTime) + " seconds.\n")
 
-
-
-
-
-
-
+vicOperations()
+cpuOperations()
+cudaOperations()
 
 print("-----Comparisons-----\n")
 

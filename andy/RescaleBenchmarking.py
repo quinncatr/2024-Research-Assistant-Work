@@ -6,6 +6,11 @@ from argparse import ArgumentParser
 from jtop import jtop
 from timeit import default_timer as timer
 
+#python3 RescaleBenchmarking.py 
+# ../../../../opt/nvidia/vpi1/samples/assets/kodim08.png 
+# ../../../../opt/nvidia/vpi1/samples/assets/kodim09.png 
+# ../../../../opt/nvidia/vpi1/samples/assets/kodim10.png
+
 #with jtop() as jetson:
     #print(jetson.stats)
 

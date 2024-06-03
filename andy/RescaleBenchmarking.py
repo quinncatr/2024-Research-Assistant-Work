@@ -16,15 +16,12 @@ def parseArgs():
 
     parser.add_argument('vicInput',
                         help='Image to be used as input')
-
     parser.add_argument('cudaInput',
                         help='Image to be used as input')
-
     parser.add_argument('cpuInput',
                         help='Image to be used as input')
 
     args = parser.parse_args();
-
 
 def vicOperations():
     global vicTime
@@ -48,7 +45,7 @@ def vicOperations():
     # Save result to disk
     #Image.fromarray(output.cpu()).save('scaled_python_VIC'+'.jpeg')
 
-    print("\nRescaling using VIC was completed in " + str(vicTime) + " seconds.\n")
+    print("\nRescaling using VIC was completed in " + str(vicTime) + " seconds.")
 
 def cudaOperations():
     global cudaTime
@@ -65,7 +62,7 @@ def cudaOperations():
 
     #Image.fromarray(output.cpu()).save('scaled_python_CUDA'+'.jpeg')
 
-    print("Rescaling using CUDA was completed in " + str(cudaTime) + " seconds.\n")
+    print("Rescaling using CUDA was completed in " + str(cudaTime) + " seconds.")
 
 def cpuOperations():
     global cpuTime
@@ -82,23 +79,18 @@ def cpuOperations():
 
     #Image.fromarray(output.cpu()).save('scaled_python_CPU'+'.jpeg')
 
-    print("Rescaling using CPU was completed in " + str(cpuTime) + " seconds.\n")
-
+    print("Rescaling using CPU was completed in " + str(cpuTime) + " seconds.")
 
 
 parseArgs()
 
-cudaOperations()
+print("-----Operations-----\n")
 
 vicOperations()
-
+cudaOperations()
 cpuOperations()
 
-
-
-
-
-
+print("\n")
 
 print("-----Comparisons-----\n")
 
@@ -115,13 +107,6 @@ print("Rescaling using VIC is " + str(vicCudaTimeDiff) + " seconds (" + str(vicC
 print("Rescaling using the CPU is " + str(cpuCudaTimeDiff) + " seconds (" + str(cpuCudaPercentDiff) + "%) slower than using the CUDA.")
 print("Rescaling using the CPU is " + str(vicCpuTimeDiff) + " seconds (" + str(vicCpuPercentDiff) + "%) faster than using VIC.\n")
 print("Rescaling using CUDA is " + str(vicCudaTimeDiff) + " seconds (" + str(vicCudaPercentDiff) + "%) faster than using the VIC.")
-print("Rescaling using CUDA is " + str(cpuCudaTimeDiff) + " seconds (" + str(cpuCudaPercentDiff) + "%) faster than using the CPU.")
+print("Rescaling using CUDA is " + str(cpuCudaTimeDiff) + " seconds (" + str(cpuCudaPercentDiff) + "%) faster than using the CPU.\n")
 
-#TODO: Find out why the order of the backends code changes elapsed time
-#TODO: ex. vic last is .0006 seconds, but vic first is .01 seconds
-#TODO: Uncomment save to disk line, just did that so it wouldn't keep creating images all the time
-#TODO: My theory about the bug is that each chip is running at the same speed every time, but 
-#TODO:                      that they get mislabeled in the print 
-#TODO:                      statments depending on which one is first in the code
-#TODO: When run 1 at a time, with the other 2 commented out, results are very very close to each other
 # vim: ts=8:sw=4:sts=4:et:ai

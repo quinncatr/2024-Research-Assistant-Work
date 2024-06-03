@@ -165,6 +165,9 @@ python TNRBenchmarking.py cuda ../../../../opt/nvidia/vpi1/samples/assets/noisy.
 - Note: This program will create a new mp4 file and store it in the directory that the program was run from.
 
 ### Rescaling Benchmarking
-- To benchmark the `Rescaling.py` sample, pillow must be installed. to do this, run ` sudo pip3 install pillow`.
+- To benchmark the `Rescaling.py` sample, pillow must be installed. to do this, run `sudo pip3 install pillow`.
 - The `RescaleBenchmarking.py` program runs the rescaling operation on the CPU, CUDA and VIC and displays data about the speed each operation took and how it compares to the other accelerators.
 - Interestingly, after initial benchmarking tests were written, the time taken to finish the operation on any given chip would change significantly depending on which chip ran the operation first.
+- It appears that the first operation was storing the image in cache in addition to completing the operation, which explains the slower recorded time.
+- To fix this, warmup methods were written to store all data in the appropriate cache ahead of time to only time the operations completed.
+- To run the rescaling operations, run ```python3 RescaleBenchmarking.py <sample png file> ```

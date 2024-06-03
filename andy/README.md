@@ -67,8 +67,8 @@
 
 ## VPI (Video Programming Interface)
 ### Installation
-- Due to the Jetson Nano running Jetpack 4.6.1, VPI 1.2 is the newest supported version of VPI. Jetpack 4.6.1 includes Ubuntu 18.04, which determines the version of VPI that can be used.
-- To install VPI 1.2 on the Nano, run the following commands in the terminal. 
+- Due to the Jetson Nano running Jetpack 4.6.1, VPI 2.3 is the newest supported version of VPI. Jetpack 4.6.1 includes Ubuntu 18.04, which determines the version of VPI that can be used.
+- To install VPI 2.4 on the Nano, run the following commands in the terminal. 
   - Note: These commands will only work for Jetpack 4.6.1 running Ubuntu 18.04
 ```
 sudo apt-get update
@@ -82,11 +82,11 @@ sudo apt install libnvvpi1 vpi1-dev vpi1-samples
 sudo apt install vpi1-demos
 ```
 - Examples of how VPI can be used can be found in `/opt/nvidia/vpi1`
-### VPI 1.2 Operations
+### VPI 2.3 Operations
 - Despite being an older version of VPI, many operations are available and supported in both C++ and Python.
-- For more information on how VPI works read the [Nvidia VPI architecture document](https://docs.nvidia.com/vpi/1.2/architecture.html).
+- For more information on how VPI works read the [Nvidia VPI architecture document](https://docs.nvidia.com/vpi/2.3/architecture.html).
 - The following table lists the algorithms inlcuded in Nvidia VPI along with the backends that they can be run on.
-  - Note: The table is only compatibale with a Jetson Nano running VPI 1.2.
+  - Note: The table is only compatibale with a Jetson Nano running VPI 2.3.
 
 ### VIC Operations
 
@@ -95,6 +95,9 @@ sudo apt install vpi1-demos
 | Temporal Noise Reduction | no | yes | no | yes |
 | Convert Image Format | yes | yes | no | yes |
 | Rescale | yes | yes | no | yes |
+| Remap | yes | yes | no | yes |
+| Perspective Warp | yes | yes | no | yes |
+| Lens Distortion Correction | yes | yes | no | yes |
 
 ### Other Operations
 
@@ -108,11 +111,8 @@ sudo apt install vpi1-demos
 | Dilate | yes | yes | no | no |
 | Convolution | yes | yes | yes | no |
 | Seperable Convolution | yes | yes | yes | no |
-| Remap | yes | yes | no | no |
-| Perspective Warp | yes | yes | no | no |
 | FFT | yes | yes | no | no |
 | Inverse FFT | yes | yes | no | no |
-| Lens Distortion Correction | yes | yes | no | no |
 | Stereo Disparity Estimator | yes | yes | yes | no |
 | KLT Feature Tracker | yes | yes | yes | no |
 | Harris Corner Detector | yes | yes | yes | no |
@@ -121,8 +121,19 @@ sudo apt install vpi1-demos
 | Equalize Histogram | yes | yes | no | no |
 | Background Subtractor | yes | yes | no | no |
 | Min/Max Location | yes | yes | no | no |
+| Image Flip | yes | yes | no | no |
+| Median Filter | yes | yes | yes | no |
+| FAST Corners Detector | yes | yes | no | no |
+| Mix Channels | yes | yes | no | no |
+| Canny Edge Detector | yes | yes | no | no |
+| Orb Feature Detector | yes | yes | no | no |
+| Image Statistics | yes | yes | no | no |
+| Template Matching | yes | yes | no| no |
+| Transform Estimator | yes | no | no | no |
+| Brute Force Matcher | yes | yes | no | no |
 
-  - To find more information about what these operations do and how they work, go to [Nvidia VPI1.2 Algorithms](https://docs.nvidia.com/vpi/1.2/algorithms.html).
+
+  - To find more information about what these operations do and how they work, go to [Nvidia VPI1.2 Algorithms](https://docs.nvidia.com/vpi/2.3/algorithms.html).
 
 ## JTOP
 ### JTOP overview

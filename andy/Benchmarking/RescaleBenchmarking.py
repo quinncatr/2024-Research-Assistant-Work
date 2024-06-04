@@ -23,7 +23,8 @@ def parseArgs():
 def vicOperations():
     global vicTime
     with jtop() as jetson:
-        vicDf = pd.DataFrame(jetson.stats, index = [0])
+        vicData = pd.DataFrame(jetson.stats, index = [0])
+        vicPower = pd.DataFrame(jetson.power)
     # Using the chosen backend,
     with vpi.Backend.VIC:
         # Load input into a vpi.Image
@@ -45,14 +46,18 @@ def vicOperations():
     Image.fromarray(output.cpu()).save('scaled_python_VIC'+'.jpeg')
 
     print("Rescaling using VIC was completed in " + str(vicTime) + " seconds.")
-    print("Jetson status during execution on VIC:")
-    print(vicDf)
+    print("\n-----Usage-----")
+    print(vicData[['APE', 'CPU1', 'CPU2', 'CPU3', 'CPU4', 'EMC', 'GPU', 'Temp AO', 'Temp CPU', 'Temp GPU', 'Temp PLL', 
+                'Temp thermal', 'VIC03', 'time']])
+    print("\n-----Power Consumption-----")
+    print(vicPower[['tot']])
     print("\n")
 
 def cudaOperations():
     global cudaTime
     with jtop() as jetson:
-        cudaDf = pd.DataFrame(jetson.stats, index = [0])
+        cudaData = pd.DataFrame(jetson.stats, index = [0])
+        cudaPower = pd.DataFrame(jetson.power)
     with vpi.Backend.CUDA:
         input = vpi.asimage(np.asarray(Image.open(args.Input)))
     
@@ -67,14 +72,18 @@ def cudaOperations():
     Image.fromarray(output.cpu()).save('scaled_python_CUDA'+'.jpeg')
 
     print("Rescaling using CUDA was completed in " + str(cudaTime) + " seconds.")
-    print("Jetson status during execution on CUDA:")
-    print(cudaDf)
+    print("\n-----Usage-----")
+    print(cudaData[['APE', 'CPU1', 'CPU2', 'CPU3', 'CPU4', 'EMC', 'GPU', 'Temp AO', 'Temp CPU', 'Temp GPU', 'Temp PLL', 
+                'Temp thermal', 'VIC03', 'time']])
+    print("\n-----Power Consumption-----")
+    print(cudaPower[['tot']])
     print("\n")
 
 def cpuOperations():
     global cpuTime
     with jtop() as jetson:
-        cpuDf = pd.DataFrame(jetson.stats, index = [0])
+        cpuData = pd.DataFrame(jetson.stats, index = [0])
+        cpuPower = pd.DataFrame(jetson.power)
     with vpi.Backend.CPU:
         input = vpi.asimage(np.asarray(Image.open(args.Input)))
 
@@ -89,8 +98,11 @@ def cpuOperations():
     Image.fromarray(output.cpu()).save('scaled_python_CPU'+'.jpeg')
 
     print("\nRescaling using CPU was completed in " + str(cpuTime) + " seconds.")
-    print("Jetson status during execution on CPU:")
-    print(cpuDf)
+    print("\n-----Usage------")
+    print(cpuData[['APE', 'CPU1', 'CPU2', 'CPU3', 'CPU4', 'EMC', 'GPU', 'Temp AO', 'Temp CPU', 'Temp GPU', 'Temp PLL', 
+                'Temp thermal', 'VIC03', 'time']])
+    print("\n-----Power Consumption-----")
+    print(cpuPower[['tot']])
     print("\n")
 
 #-----Warmup methods store everything in cache in order for operations to not 
@@ -127,7 +139,7 @@ cudaWarmup()
 cudaOperations()
 vicOperations()
 
-print("\n-----Comparisons-----\n")
+print("-----Comparisons-----\n")
 
 vicCpuTimeDiff = abs(vicTime - cpuTime)
 vicCudaTimeDiff = abs(vicTime - cudaTime)

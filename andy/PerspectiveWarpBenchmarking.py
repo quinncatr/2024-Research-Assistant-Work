@@ -56,13 +56,12 @@ def loadCpuVideo():
     loadVideo(backend)
 
 def loadVicVideo():
-    args.backend = cpi.Backend.VIC
+    args.backend = vpi.Backend.VIC
     backend = args.backend
     loadVideo(backend)
 
 def runCUDA():
     loadCudaVideo()
-
     #--------------------------------------------------------------
     # Main processing loop
     curFrame = 1
@@ -110,9 +109,85 @@ def runCUDA():
         with frame.rlock():
             outVideo.write(frame.cpu())
 
+def runCPU():
+    loadCpuVideo()
+    curFrame = 1
+    while True:
+        #print("Frame: {}".format(curFrame))
+        curFrame+=1
+
+        ret, cvFrame = inVideo.read()
+        if not ret:
+            break
+
+        with vpi.Backend.CUDA:
+            frame = vpi.asimage(cvFrame).convert(vpi.Format.NV12_ER)
+
+        T1 = np.array([[1, 0, -frame.width/2.0],
+                        [0, 1, -frame.height/2.0],
+                        [0, 0, 1]])
+
+        v1 = sin(curFrame/30.0*2*pi/2)*0.0005
+        v2 = cos(curFrame/30.0*2*pi/3)*0.0005
+        P = np.array([[0.66, 0, 0],
+                    [0, 0.66, 0],
+                    [v1, v2, 1]])
+
+        T2 = np.array([[1, 0, frame.width/2.0],
+                        [0, 1, frame.height/2.0],
+                        [0, 0, 1]])
+
+        with vpi.Backend.CPU:
+            frame = frame.perspwarp(np.matmul(T2, np.matmul(P, T1)))
+
+        with vpi.Backend.CUDA:
+            frame = frame.convert(vpi.Format.RGB8)
+
+        with frame.rlock():
+            outVideo.write(frame.cpu())
+'''
+def runVIC():
+    loadCpuVideo()
+    curFrame = 1
+    while True:
+        #print("Frame: {}".format(curFrame))
+        curFrame+=1
+
+        ret, cvFrame = inVideo.read()
+        if not ret:
+            break
+
+        with vpi.Backend.CUDA:
+            frame = vpi.asimage(cvFrame).convert(vpi.Format.NV12_ER)
+
+        T1 = np.array([[1, 0, -frame.width/2.0],
+                        [0, 1, -frame.height/2.0],
+                        [0, 0, 1]])
+
+        v1 = sin(curFrame/30.0*2*pi/2)*0.0005
+        v2 = cos(curFrame/30.0*2*pi/3)*0.0005
+        P = np.array([[0.66, 0, 0],
+                    [0, 0.66, 0],
+                    [v1, v2, 1]])
+
+        T2 = np.array([[1, 0, frame.width/2.0],
+                        [0, 1, frame.height/2.0],
+                        [0, 0, 1]])
+
+        with vpi.Backend.VIC:
+            frame = frame.perspwarp(np.matmul(T2, np.matmul(P, T1)))
+
+        with vpi.Backend.CUDA:
+            frame = frame.convert(vpi.Format.RGB8)
+
+        with frame.rlock():
+            outVideo.write(frame.cpu())
+'''
 
 
 parseArgs()
 runCUDA()
+runCPU()
+#runVIC()
 
 # vim: ts=8:sw=4:sts=4:et:ai

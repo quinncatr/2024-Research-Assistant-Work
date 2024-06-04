@@ -7,7 +7,7 @@ from argparse import ArgumentParser
 from timeit import default_timer as timer
 
 #python3 PerspectiveWarpBenchmarking.py 
-# ../../../../opt/nvidia/vpi1/samples/assets/noisy.mp4
+# ../../../../../opt/nvidia/vpi1/samples/assets/noisy.mp4
 def parseArgs():
     global args
     # ----------------------------

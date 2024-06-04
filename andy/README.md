@@ -171,3 +171,6 @@ python TNRBenchmarking.py cuda ../../../../opt/nvidia/vpi1/samples/assets/noisy.
 - It appears that the first operation was storing the image in cache in addition to completing the operation, which explains the slower recorded time.
 - To fix this, warmup methods were written to store all data in the appropriate cache ahead of time to only time the operations completed.
 - To run the rescaling operations, run ```python3 RescaleBenchmarking.py <sample png file> ```
+
+### Perspective Warp Benchmakring
+- The Perspective warp program operates the same way as the previous two benchmarking programs and displays similar data about each operation and backend.

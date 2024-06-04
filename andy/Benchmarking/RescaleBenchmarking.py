@@ -6,12 +6,15 @@ from argparse import ArgumentParser
 from jtop import jtop
 from timeit import default_timer as timer
 from jtop import jtop
+import pandas as pd
 
-
-
+'''
 with jtop() as jetson:
-    print(jetson.power)
+    #print(jetson.power)
     #print(jetson.stats)
+    #df = pd.DataFrame(jetson.stats, index = [0])
+    pass
+    '''
 
 #python3 RescaleBenchmarking.py 
 # ../../../../../opt/nvidia/vpi1/samples/assets/kodim08.png 
@@ -30,6 +33,8 @@ def parseArgs():
 
 def vicOperations():
     global vicTime
+    with jtop() as jetson:
+        vicDf = pd.DataFrame(jetson.stats, index = [0])
     # Using the chosen backend,
     with vpi.Backend.VIC:
         # Load input into a vpi.Image
@@ -51,9 +56,14 @@ def vicOperations():
     Image.fromarray(output.cpu()).save('scaled_python_VIC'+'.jpeg')
 
     print("Rescaling using VIC was completed in " + str(vicTime) + " seconds.")
+    print("Jetson status during execution on VIC:")
+    print(vicDf)
+    print("\n")
 
 def cudaOperations():
     global cudaTime
+    with jtop() as jetson:
+        cudaDf = pd.DataFrame(jetson.stats, index = [0])
     with vpi.Backend.CUDA:
         input = vpi.asimage(np.asarray(Image.open(args.Input)))
     
@@ -68,9 +78,14 @@ def cudaOperations():
     Image.fromarray(output.cpu()).save('scaled_python_CUDA'+'.jpeg')
 
     print("Rescaling using CUDA was completed in " + str(cudaTime) + " seconds.")
+    print("Jetson status during execution on CUDA:")
+    print(cudaDf)
+    print("\n")
 
 def cpuOperations():
     global cpuTime
+    with jtop() as jetson:
+        cpuDf = pd.DataFrame(jetson.stats, index = [0])
     with vpi.Backend.CPU:
         input = vpi.asimage(np.asarray(Image.open(args.Input)))
 
@@ -85,6 +100,9 @@ def cpuOperations():
     Image.fromarray(output.cpu()).save('scaled_python_CPU'+'.jpeg')
 
     print("\nRescaling using CPU was completed in " + str(cpuTime) + " seconds.")
+    print("Jetson status during execution on CPU:")
+    print(cpuDf)
+    print("\n")
 
 #-----Warmup methods store everything in cache in order for operations to not 
 #-----have to do that themselves, which causes speed discrepencies
@@ -111,7 +129,7 @@ def cudaWarmup():
 
 parseArgs()
 
-print("-----Operations-----\n")
+print("\n-----Operations-----\n")
 
 cpuWarmup()
 cpuOperations()

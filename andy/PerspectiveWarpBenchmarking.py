@@ -189,7 +189,6 @@ def runVIC():
             outVideo.write(frame.cpu())
 '''
 
-
 parseArgs()
 runCUDA()
 runCPU()
@@ -197,7 +196,6 @@ runCPU()
 
 timeDiff = abs(cudaTime - cpuTime)
 percentDiff = (timeDiff / ((cudaTime + cpuTime) / 2)) * 100
-
 
 print("\n-----Operations-----")
 print("Perspective warp using the CPU was completed in " + str(cpuTime) + " seconds.")

@@ -4,6 +4,7 @@ import vpi
 import numpy as np
 from math import sin, cos, pi
 from argparse import ArgumentParser
+from timeit import default_timer as timer
 
 #python3 PerspectiveWarpBenchmarking.py 
 # ../../../../opt/nvidia/vpi1/samples/assets/noisy.mp4
@@ -61,6 +62,7 @@ def loadVicVideo():
     loadVideo(backend)
 
 def runCUDA():
+    global cudaTime
     loadCudaVideo()
     #--------------------------------------------------------------
     # Main processing loop
@@ -96,11 +98,11 @@ def runCUDA():
         T2 = np.array([[1, 0, frame.width/2.0],
                         [0, 1, frame.height/2.0],
                         [0, 0, 1]])
-
+        start = timer()
         # Do perspective warp using the backend passed in the command line.
         with vpi.Backend.CUDA:
             frame = frame.perspwarp(np.matmul(T2, np.matmul(P, T1)))
-
+        end = timer()
         # Convert it to RGB8 for output using the CUDA backend
         with vpi.Backend.CUDA:
             frame = frame.convert(vpi.Format.RGB8)
@@ -108,8 +110,10 @@ def runCUDA():
         # Write the denoised frame to the output video
         with frame.rlock():
             outVideo.write(frame.cpu())
+        cudaTime = end - start
 
 def runCPU():
+    global cpuTime
     loadCpuVideo()
     curFrame = 1
     while True:
@@ -136,15 +140,16 @@ def runCPU():
         T2 = np.array([[1, 0, frame.width/2.0],
                         [0, 1, frame.height/2.0],
                         [0, 0, 1]])
-
+        start = timer()
         with vpi.Backend.CPU:
             frame = frame.perspwarp(np.matmul(T2, np.matmul(P, T1)))
-
+        end = timer()
         with vpi.Backend.CUDA:
             frame = frame.convert(vpi.Format.RGB8)
 
         with frame.rlock():
             outVideo.write(frame.cpu())
+        cpuTime = end - start
 '''
 def runVIC():
     loadCpuVideo()
@@ -189,5 +194,16 @@ parseArgs()
 runCUDA()
 runCPU()
 #runVIC()
+
+timeDiff = abs(cudaTime - cpuTime)
+percentDiff = (timeDiff / ((cudaTime + cpuTime) / 2)) * 100
+
+
+print("\n-----Operations-----")
+print("Perspective warp using the CPU was completed in " + str(cpuTime) + " seconds.")
+print("Perspective warp using CUDA was completed in " + str(cudaTime) + " seconds.")
+
+print("\n-----Comparisons-----")
+print("Perspective warp using CPU is " + str(timeDiff) + " (" + str(percentDiff) + " %) seconds faster than CUDA.")
 
 # vim: ts=8:sw=4:sts=4:et:ai

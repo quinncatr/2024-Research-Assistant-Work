@@ -8,19 +8,8 @@ from timeit import default_timer as timer
 from jtop import jtop
 import pandas as pd
 
-'''
-with jtop() as jetson:
-    #print(jetson.power)
-    #print(jetson.stats)
-    #df = pd.DataFrame(jetson.stats, index = [0])
-    pass
-    '''
-
 #python3 RescaleBenchmarking.py 
 # ../../../../../opt/nvidia/vpi1/samples/assets/kodim08.png 
-
-#with jtop() as jetson:
-    #print(jetson.stats)
 
 def parseArgs():
     global args

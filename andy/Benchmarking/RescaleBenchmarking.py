@@ -5,6 +5,13 @@ from PIL import Image
 from argparse import ArgumentParser
 from jtop import jtop
 from timeit import default_timer as timer
+from jtop import jtop
+
+
+
+with jtop() as jetson:
+    print(jetson.power)
+    #print(jetson.stats)
 
 #python3 RescaleBenchmarking.py 
 # ../../../../../opt/nvidia/vpi1/samples/assets/kodim08.png 

@@ -15,16 +15,24 @@ def parseArgs():
     global args
     # Parse command line arguments
     parser = ArgumentParser()
-    
     parser.add_argument('Input',
                         help='Image to be used as input')
     args = parser.parse_args();
 
 def vicOperations():
     global vicTime
+    global vicPower
+    global vicCurrent
+    global vicVoltage
+
     with jtop() as jetson:
         vicData = pd.DataFrame(jetson.stats, index = [0])
-        vicPower = pd.DataFrame(jetson.power)
+        vicEnergy = pd.DataFrame(jetson.power)
+    
+    vicCurrent = vicEnergy['tot'][4]
+    vicPower = vicEnergy['tot'][7]
+    vicVoltage = vicEnergy["tot"][8]
+
     # Using the chosen backend,
     with vpi.Backend.VIC:
         # Load input into a vpi.Image
@@ -50,23 +58,32 @@ def vicOperations():
     print(vicData[['APE', 'CPU1', 'CPU2', 'CPU3', 'CPU4', 'EMC', 'GPU', 'Temp AO', 'Temp CPU', 'Temp GPU', 'Temp PLL', 
                 'Temp thermal', 'VIC03', 'time']])
     print("\n-----Power Consumption-----")
-    print(vicPower[['tot']])
+    print(vicEnergy[['tot']])
     print("\n")
 
 def cudaOperations():
     global cudaTime
+    global cudaPower
+    global cudaCurrent
+    global cudaVoltage
+
     with jtop() as jetson:
         cudaData = pd.DataFrame(jetson.stats, index = [0])
-        cudaPower = pd.DataFrame(jetson.power)
+        cudaEnergy = pd.DataFrame(jetson.power)
+    
+    cudaCurrent = cudaEnergy['tot'][4]
+    cudaPower = cudaEnergy['tot'][7]
+    cudaVoltage = cudaEnergy["tot"][8]
+
     with vpi.Backend.CUDA:
         input = vpi.asimage(np.asarray(Image.open(args.Input)))
-    
         temp = input.convert(vpi.Format.NV12_ER, backend=vpi.Backend.CUDA)
+
         start = timer()
         temp = temp.rescale((input.width//2, input.height//3))
         end = timer()
+
         output = temp.convert(input.format, backend=vpi.Backend.CUDA)
-        
         cudaTime = end - start
 
     Image.fromarray(output.cpu()).save('scaled_python_CUDA'+'.jpeg')
@@ -76,23 +93,32 @@ def cudaOperations():
     print(cudaData[['APE', 'CPU1', 'CPU2', 'CPU3', 'CPU4', 'EMC', 'GPU', 'Temp AO', 'Temp CPU', 'Temp GPU', 'Temp PLL', 
                 'Temp thermal', 'VIC03', 'time']])
     print("\n-----Power Consumption-----")
-    print(cudaPower[['tot']])
+    print(cudaEnergy[['tot']])
     print("\n")
 
 def cpuOperations():
     global cpuTime
+    global cpuPower
+    global cpuCurrent
+    global cpuVoltage
+
     with jtop() as jetson:
         cpuData = pd.DataFrame(jetson.stats, index = [0])
-        cpuPower = pd.DataFrame(jetson.power)
+        cpuEnergy = pd.DataFrame(jetson.power)
+
+    cpuCurrent = cpuEnergy['tot'][4]
+    cpuPower = cpuEnergy['tot'][7]
+    cpuVoltage = cpuEnergy["tot"][8]
+
     with vpi.Backend.CPU:
         input = vpi.asimage(np.asarray(Image.open(args.Input)))
-
         temp = input.convert(vpi.Format.NV12_ER, backend=vpi.Backend.CPU)
+
         start = timer()
         temp = temp.rescale((input.width//2, input.height//3))
         end = timer()
-        output = temp.convert(input.format, backend=vpi.Backend.CPU)
 
+        output = temp.convert(input.format, backend=vpi.Backend.CPU)
         cpuTime = end - start
 
     Image.fromarray(output.cpu()).save('scaled_python_CPU'+'.jpeg')
@@ -102,7 +128,7 @@ def cpuOperations():
     print(cpuData[['APE', 'CPU1', 'CPU2', 'CPU3', 'CPU4', 'EMC', 'GPU', 'Temp AO', 'Temp CPU', 'Temp GPU', 'Temp PLL', 
                 'Temp thermal', 'VIC03', 'time']])
     print("\n-----Power Consumption-----")
-    print(cpuPower[['tot']])
+    print(cpuEnergy[['tot']])
     print("\n")
 
 #-----Warmup methods store everything in cache in order for operations to not 

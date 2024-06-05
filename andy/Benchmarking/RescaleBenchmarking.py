@@ -169,9 +169,9 @@ vicCpuTimeDiff = abs(vicTime - cpuTime)
 vicCudaTimeDiff = abs(vicTime - cudaTime)
 cpuCudaTimeDiff = abs(cpuTime - cudaTime)
 
-vicCpuPercentDiff = (vicCpuTimeDiff / ((vicTime + cpuTime) / 2)) * 100
-vicCudaPercentDiff = (vicCudaTimeDiff / ((vicTime + cudaTime) / 2)) * 100
-cpuCudaPercentDiff = (cpuCudaTimeDiff / ((cudaTime + cpuTime) / 2)) * 100
+vicCpuPercentDiff = round(((vicCpuTimeDiff / ((vicTime + cpuTime) / 2)) * 100), 2)
+vicCudaPercentDiff = round(((vicCudaTimeDiff / ((vicTime + cudaTime) / 2)) * 100), 2)
+cpuCudaPercentDiff = round(((cpuCudaTimeDiff / ((cudaTime + cpuTime) / 2)) * 100), 2)
 
 print("-----Speed Comparisons-----\n")
 
@@ -186,9 +186,9 @@ vicCpuPowerDiff = abs(cpuPower - vicPower)
 vicCudaPowerDiff = abs(cudaPower - vicPower)
 cpuCudaPowerDiff = abs(cpuPower - cudaPower)
 
-vicCpuPowerPercentDiff = (vicCpuPowerDiff / ((cpuPower + vicPower) / 2)) * 100
-cpuCudaPowerPercentDiff = (cpuCudaPowerDiff / ((cpuPower + cudaPower) / 2)) * 100
-vicCudaPowerPercentDiff = (vicCudaPowerDiff / ((vicPower + cudaPower) / 2)) * 100
+vicCpuPowerPercentDiff = round(((vicCpuPowerDiff / ((cpuPower + vicPower) / 2)) * 100), 2)
+cpuCudaPowerPercentDiff = round(((cpuCudaPowerDiff / ((cpuPower + cudaPower) / 2)) * 100), 2)
+vicCudaPowerPercentDiff = round(((vicCudaPowerDiff / ((vicPower + cudaPower) / 2)) * 100), 2)
 
 print("-----Energy Comparisons-----\n")
 print("Rescaling using the CPU used " + str(vicCpuPowerPercentDiff) + "% more power than VIC.")

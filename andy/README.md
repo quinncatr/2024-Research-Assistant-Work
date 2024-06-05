@@ -142,8 +142,15 @@ sudo apt install vpi1-demos
 - To install JTOP, make sure PIP is installed along with python3. Once those are installed run `sudo pip3 install -U jetson-stats` in the terminal. You may need to logout and/or reboot the Nano before running JTOP. Once the Nano has been rebooted, simply run `jtop` in the terminal.
 ### Using JTOP in a python program
 - JTOP is capable of being imported into a python program and displaying a text summary of the Nanos stats
-- To import, add `from jtop import jtop` to the program. Then add `with jtop90 as jetson:` to call jtop methods on the jetson.
+- To import, add `from jtop import jtop` to the program. Then add `with jtop() as jetson:` to call jtop methods on the Jetson.
   - For example, once the imports are complete `print(jetson.stats)` displays CPU, GPU and accelerator data like usage, temps, power draw, etc in the terminal when the program is run.
+### Custom JTOP Data Display
+- `jetson.stats` can be mainpulated to display custom messages based on the information that is important to the user.
+- JTOP creates python dictionaries that store all of the data that it collects.
+- A python dataframe can be used to convert the dictionary into a 2D array to make it easier to manipulate.
+- Once a dataframe of the desired data has been created, you can print various parts of the dataframe depending on desired data without printing every peice of data collected.
+- In the case of the following benchmarking program, CPU, GPU, and VIC usage, temps, and energy consumption are the primary observations made.
+- To get additional energy consumption data, `jetson.power` can be used to collect data about current, voltage, power, etc. This can also be converted into a dataframe and manipulated to display only the desired data.
 
 ## Initial VPI Benchmakring
 - In order to learn more about the Nano and how its various accelerators work, initial benchmarking must be done.
@@ -160,7 +167,7 @@ python TNRBenchmarking.py <accelorator> <input video filepath>
 - Example command:
 
 ```
-python TNRBenchmarking.py cuda ../../../../opt/nvidia/vpi1/samples/assets/noisy.mp4
+python TNRBenchmarking.py cuda ../../../../../opt/nvidia/vpi1/samples/assets/noisy.mp4
 ```
 - Note: This program will create a new mp4 file and store it in the directory that the program was run from.
 

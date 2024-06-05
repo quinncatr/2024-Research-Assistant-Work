@@ -133,7 +133,7 @@ sudo apt install vpi1-demos
 | Brute Force Matcher | yes | yes | no | no |
 
 
-  - To find more information about what these operations do and how they work, go to [Nvidia VPI1.2 Algorithms](https://docs.nvidia.com/vpi/2.3/algorithms.html).
+  - To find more information about what these operations do and how they work, go to [Nvidia VPI 2.3 Algorithms](https://docs.nvidia.com/vpi/2.3/algorithms.html).
 
 ## JTOP
 ### JTOP overview

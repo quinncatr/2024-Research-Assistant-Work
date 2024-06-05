@@ -165,8 +165,6 @@ cudaWarmup()
 cudaOperations()
 vicOperations()
 
-print("-----Comparisons-----\n")
-
 vicCpuTimeDiff = abs(vicTime - cpuTime)
 vicCudaTimeDiff = abs(vicTime - cudaTime)
 cpuCudaTimeDiff = abs(cpuTime - cudaTime)
@@ -175,11 +173,30 @@ vicCpuPercentDiff = (vicCpuTimeDiff / ((vicTime + cpuTime) / 2)) * 100
 vicCudaPercentDiff = (vicCudaTimeDiff / ((vicTime + cudaTime) / 2)) * 100
 cpuCudaPercentDiff = (cpuCudaTimeDiff / ((cudaTime + cpuTime) / 2)) * 100
 
-print("Rescaling using the CPU is " + str(cpuCudaTimeDiff) + " seconds (" + str(cpuCudaPercentDiff) + "%) slower than using the CUDA.")
-print("Rescaling using the CPU is " + str(vicCpuTimeDiff) + " seconds (" + str(vicCpuPercentDiff) + "%) faster than using VIC.\n")
-print("Rescaling using CUDA is " + str(vicCudaTimeDiff) + " seconds (" + str(vicCudaPercentDiff) + "%) faster than using the VIC.")
-print("Rescaling using CUDA is " + str(cpuCudaTimeDiff) + " seconds (" + str(cpuCudaPercentDiff) + "%) faster than using the CPU.\n")
-print("Rescaling using VIC is " + str(vicCpuTimeDiff) + " seconds (" + str(vicCpuPercentDiff) + "%) slower than using the CPU.")
-print("Rescaling using VIC is " + str(vicCudaTimeDiff) + " seconds (" + str(vicCudaPercentDiff) + "%) slower than using CUDA.\n")
+print("-----Speed Comparisons-----\n")
+
+print("Rescaling using the CPU is " + str(cpuCudaPercentDiff) + "% slower than using CUDA.")
+print("Rescaling using the CPU is " + str(vicCpuPercentDiff) + "% faster than using VIC.\n")
+print("Rescaling using CUDA is " + str(vicCudaPercentDiff) + "% faster than using the VIC.")
+print("Rescaling using CUDA is " + str(cpuCudaPercentDiff) + "% faster than using the CPU.\n")
+print("Rescaling using VIC is " + str(vicCpuPercentDiff) + "% slower than using the CPU.")
+print("Rescaling using VIC is " + str(vicCudaPercentDiff) + "% slower than using CUDA.\n")
+
+vicCpuPowerDiff = abs(cpuPower - vicPower)
+vicCudaPowerDiff = abs(cudaPower - vicPower)
+cpuCudaPowerDiff = abs(cpuPower - cudaPower)
+
+vicCpuPowerPercentDiff = (vicCpuPowerDiff / ((cpuPower + vicPower) / 2)) * 100
+cpuCudaPowerPercentDiff = (cpuCudaPowerDiff / ((cpuPower + cudaPower) / 2)) * 100
+vicCudaPowerPercentDiff = (vicCudaPowerDiff / ((vicPower + cudaPower) / 2)) * 100
+
+print("-----Energy Comparisons-----\n")
+print("Rescaling using the CPU used " + str(vicCpuPowerPercentDiff) + "% more power than VIC.")
+print("Rescaling using the CPU used " + str(cpuCudaPowerPercentDiff) + "% more power than CUDA.\n")
+print("Rescaling using CUDA used " + str(vicCudaPowerPercentDiff) + "% more power than VIC.")
+print("Rescaling using CUDA used " + str(cpuCudaPowerPercentDiff) + "% less power than the CPU.\n")
+print("Rescaling using VIC used " + str(vicCudaPowerPercentDiff) + "% less power than CUDA.")
+print("Rescaling using VIC used " + str(vicCpuPowerPercentDiff) + "% less power than the CPU.\n")
+
 
 # vim: ts=8:sw=4:sts=4:et:ai

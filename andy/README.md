@@ -47,6 +47,7 @@
   sudo pip3 install --verbose 'protobuf<4' 'Cython<3'
   sudo wget --no-check-certificate https://developer.download.nvidia.com/compute/redist/jp/v461/tensorflow/tensorflow-2.7.0+nv22.1-cp36-cp36m-linux_aarch64.whl
   sudo pip3 install --verbose tensorflow-2.7.0+nv22.1-cp36-cp36m-linux_aarch64.whl
+  pip3 install tensorflow_datasets
   ```
   - Note: These commands can take 10 - 15 minutes to complete. 
 ### Verifying TensorFlow Install

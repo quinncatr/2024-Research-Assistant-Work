@@ -47,6 +47,7 @@
   sudo pip3 install --verbose 'protobuf<4' 'Cython<3'
   sudo wget --no-check-certificate https://developer.download.nvidia.com/compute/redist/jp/v461/tensorflow/tensorflow-2.7.0+nv22.1-cp36-cp36m-linux_aarch64.whl
   sudo pip3 install --verbose tensorflow-2.7.0+nv22.1-cp36-cp36m-linux_aarch64.whl
+  pip3 install tensorflow_datasets
   ```
   - Note: These commands can take 10 - 15 minutes to complete. 
 ### Verifying TensorFlow Install
@@ -133,7 +134,7 @@ sudo apt install vpi1-demos
 | Brute Force Matcher | yes | yes | no | no |
 
 
-  - To find more information about what these operations do and how they work, go to [Nvidia VPI1.2 Algorithms](https://docs.nvidia.com/vpi/2.3/algorithms.html).
+  - To find more information about what these operations do and how they work, go to [Nvidia VPI 2.3 Algorithms](https://docs.nvidia.com/vpi/2.3/algorithms.html).
 
 ## JTOP
 ### JTOP overview
@@ -151,6 +152,8 @@ sudo apt install vpi1-demos
 - Once a dataframe of the desired data has been created, you can print various parts of the dataframe depending on desired data without printing every peice of data collected.
 - In the case of the following benchmarking program, CPU, GPU, and VIC usage, temps, and energy consumption are the primary observations made.
 - To get additional energy consumption data, `jetson.power` can be used to collect data about current, voltage, power, etc. This can also be converted into a dataframe and manipulated to display only the desired data.
+
+- For more information the implementation and capabilities on all of the methods included in JTOP, go to the [JTOP stats reference page](https://rnext.it/jetson_stats/reference/jtop.html).
 
 ## Initial VPI Benchmakring
 - In order to learn more about the Nano and how its various accelerators work, initial benchmarking must be done.

@@ -194,6 +194,6 @@ python TNRBenchmarking.py cuda ../../../../../opt/nvidia/vpi1/samples/assets/noi
 - Multi worker training using Keras is a way to use multiple machines, gpus, tpus, cpus, etc in different combonations to optimize machine learning programs.
 - On the Jetson Nano, this will be used to distribute the machine learning training on the Nano's CPU, GPU, and potentially VIC and other accelerators.
 - The `MultiWorkerTrainingTutorial.py` follows the introductory tutorial for using [Keras to distribute workloads among multiple processors](https://www.tensorflow.org/tutorials/distribute/multi_worker_with_keras).
-- ### Custom Training
+### Custom Training
 - This will be implemented in the future
 - The Custom Training directory will hold custom training algorithms using Multi Worker strategy to attempt to split layers of a tensorflow model to distribute among the CPU and GPU.

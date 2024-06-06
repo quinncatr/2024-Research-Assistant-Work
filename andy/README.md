@@ -186,3 +186,14 @@ python TNRBenchmarking.py cuda ../../../../../opt/nvidia/vpi1/samples/assets/noi
 - The Perspective warp program operates the same way as the previous two benchmarking programs and displays similar data about each operation and backend.
 
 ## Distributed Training In Tensorflow
+### Distributed Training Tutorial
+- The `DistributedTrainingTutorial.py` follows the introductory tutorial on [training machine learning models on one or more gpus](https://www.tensorflow.org/tutorials/distribute/keras) using the Keras API.
+- The Keras API allows the programmer to use premade methods to train and evaluete machine learnign models.
+- Tensorflow also allows the programmer to create their own methods to better suite their needs. Keras is a good starting point to make sure the models are behaving as expected before creating custom algorithms.
+### Multi Worker Training with Keras
+- Multi worker training using Keras is a way to use multiple machines, gpus, tpus, cpus, etc in different combonations to optimize machine learning programs.
+- On the Jetson Nano, this will be used to distribute the machine learning training on the Nano's CPU, GPU, and potentially VIC and other accelerators.
+- The `MultiWorkerTrainingTutorial.py` follows the introductory tutorial for using [Keras to distribute workloads among multiple processors](https://www.tensorflow.org/tutorials/distribute/multi_worker_with_keras).
+### Custom Training
+- This will be implemented in the future
+- The Custom Training directory will hold custom training algorithms using Multi Worker strategy to attempt to split layers of a tensorflow model to distribute among the CPU and GPU.

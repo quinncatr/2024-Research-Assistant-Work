@@ -96,4 +96,4 @@ with strategy.scope():
                             optimizer = tf.keras.optimizers.Adam(),
                             metrics = ['accuracy'])
     eval_loss, eval_acc = replicated_model.evaluate(eval_dataset)
-    print("Eval loss : {}, Evall accuracy: {}".format(eval_loss, eval_acc))
+    print("Eval loss : {}, Eval accuracy: {}".format(eval_loss, eval_acc))

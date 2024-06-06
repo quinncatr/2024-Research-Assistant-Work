@@ -184,3 +184,5 @@ python TNRBenchmarking.py cuda ../../../../../opt/nvidia/vpi1/samples/assets/noi
 
 ### Perspective Warp Benchmakring
 - The Perspective warp program operates the same way as the previous two benchmarking programs and displays similar data about each operation and backend.
+
+## Distributed Training In Tensorflow

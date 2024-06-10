@@ -190,6 +190,9 @@ python TNRBenchmarking.py cuda ../../../../../opt/nvidia/vpi1/samples/assets/noi
 - The `DistributedTrainingTutorial.py` follows the introductory tutorial on [training machine learning models on one or more gpus](https://www.tensorflow.org/tutorials/distribute/keras) using the Keras API.
 - The Keras API allows the programmer to use premade methods to train and evaluete machine learnign models.
 - Tensorflow also allows the programmer to create their own methods to better suite their needs. Keras is a good starting point to make sure the models are behaving as expected before creating custom algorithms.
+#### Custom Distributed Training Tutorial
+- The `CustomDistributedTraining.py` file follows the [tensorflow custom distributed training tutorial](https://www.tensorflow.org/tutorials/distribute/custom_training).
+- Similar to the beginner quicks start tutorial, GPU memory needed to be dynamically allocated because the tutorial required more memory from the GPU than the default amount. 
 ### Multi Worker Training with Keras
 - Multi worker training using Keras is a way to use multiple machines, gpus, tpus, cpus, etc in different combonations to optimize machine learning programs.
 - On the Jetson Nano, this will be used to distribute the machine learning training on the Nano's CPU, GPU, and potentially VIC and other accelerators.

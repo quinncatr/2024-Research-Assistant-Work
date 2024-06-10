@@ -52,7 +52,7 @@ print("Benchmark for CUDA " + str(end - start))
 with vpi.Backend.VIC:
 
     start = time.time()
-
+    # Image conversion example
     temp = input.convert(vpi.Format.NV12_ER, backend=vpi.Backend.CUDA)
     temp = temp.rescale((input.width//2, input.height//3))
     output = temp.convert(input.format, backend=vpi.Backend.CUDA)

@@ -52,3 +52,7 @@ sudo pip3 install --pre --extra-index-url https://developer.download.nvidia.com/
 - It also uses the convert image format algorithm to change the intial image (I used a JPEG) to one the program can use in the program's case NV12_ER
 - Rescale.py code is mostly from the Nivida Image Resampling sample code: [link](https://docs.nvidia.com/vpi/sample_rescale.html)
 - From this program, I saw that the VIC is much faster at preforming the rescaling than the CPU or CUDA
+
+## Mesh TensorFlow
+
+## Distributed Tensorflow example between Jetson Nano and a Linux Virtual Machine

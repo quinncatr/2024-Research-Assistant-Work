@@ -2,8 +2,8 @@ import json
 import os
 import sys
 
-#os.environ["CUDA_VISIBLE_DEVICES"] = '-1'
-#os.environ.pop('TF_CONFIG', None)
+os.environ["CUDA_VISIBLE_DEVICES"] = '-1'
+os.environ.pop('TF_CONFIG', None)
 
 if '.' not in sys.path:
     sys.path.insert(0, '.')
@@ -32,7 +32,7 @@ json.dumps(tf_config)
 tf_config['task']['index'] = 1
 
 
-strategy = tf.distribute.MultiWorkerMirrorStrategy()
+strategy = tf.distribute.MultiWorkerMirroredStrategy()
 with strategy.scope():
     multi_worker_model = mnist_setup.build_and_compile_cnn_model()
 

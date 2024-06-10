@@ -1,5 +1,3 @@
-#%%writefile main.py
-
 import os
 import json
 
@@ -21,3 +19,4 @@ with strategy.scope():
 multi_worker_model.fit(multi_worker_dataset, epochs = 3, steps_per_epoch = 70)
 
 os.environ['TF_CONFIG'] = json.dumps(tf_config)
+

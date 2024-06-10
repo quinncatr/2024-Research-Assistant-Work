@@ -47,6 +47,7 @@
   sudo pip3 install --verbose 'protobuf<4' 'Cython<3'
   sudo wget --no-check-certificate https://developer.download.nvidia.com/compute/redist/jp/v461/tensorflow/tensorflow-2.7.0+nv22.1-cp36-cp36m-linux_aarch64.whl
   sudo pip3 install --verbose tensorflow-2.7.0+nv22.1-cp36-cp36m-linux_aarch64.whl
+  pip3 install tensorflow_datasets
   ```
   - Note: These commands can take 10 - 15 minutes to complete. 
 ### Verifying TensorFlow Install
@@ -67,8 +68,8 @@
 
 ## VPI (Video Programming Interface)
 ### Installation
-- Due to the Jetson Nano running Jetpack 4.6.1, VPI 1.2 is the newest supported version of VPI. Jetpack 4.6.1 includes Ubuntu 18.04, which determines the version of VPI that can be used.
-- To install VPI 1.2 on the Nano, run the following commands in the terminal. 
+- Due to the Jetson Nano running Jetpack 4.6.1, VPI 2.3 is the newest supported version of VPI. Jetpack 4.6.1 includes Ubuntu 18.04, which determines the version of VPI that can be used.
+- To install VPI 2.4 on the Nano, run the following commands in the terminal. 
   - Note: These commands will only work for Jetpack 4.6.1 running Ubuntu 18.04
 ```
 sudo apt-get update
@@ -82,11 +83,11 @@ sudo apt install libnvvpi1 vpi1-dev vpi1-samples
 sudo apt install vpi1-demos
 ```
 - Examples of how VPI can be used can be found in `/opt/nvidia/vpi1`
-### VPI 1.2 Operations
+### VPI 2.3 Operations
 - Despite being an older version of VPI, many operations are available and supported in both C++ and Python.
-- For more information on how VPI works read the [Nvidia VPI architecture document](https://docs.nvidia.com/vpi/1.2/architecture.html).
+- For more information on how VPI works read the [Nvidia VPI architecture document](https://docs.nvidia.com/vpi/2.3/architecture.html).
 - The following table lists the algorithms inlcuded in Nvidia VPI along with the backends that they can be run on.
-  - Note: The table is only compatibale with a Jetson Nano running VPI 1.2.
+  - Note: The table is only compatibale with a Jetson Nano running VPI 2.3.
 
 ### VIC Operations
 
@@ -95,6 +96,9 @@ sudo apt install vpi1-demos
 | Temporal Noise Reduction | no | yes | no | yes |
 | Convert Image Format | yes | yes | no | yes |
 | Rescale | yes | yes | no | yes |
+| Remap | yes | yes | no | yes |
+| Perspective Warp | yes | yes | no | yes |
+| Lens Distortion Correction | yes | yes | no | yes |
 
 ### Other Operations
 
@@ -108,11 +112,8 @@ sudo apt install vpi1-demos
 | Dilate | yes | yes | no | no |
 | Convolution | yes | yes | yes | no |
 | Seperable Convolution | yes | yes | yes | no |
-| Remap | yes | yes | no | no |
-| Perspective Warp | yes | yes | no | no |
 | FFT | yes | yes | no | no |
 | Inverse FFT | yes | yes | no | no |
-| Lens Distortion Correction | yes | yes | no | no |
 | Stereo Disparity Estimator | yes | yes | yes | no |
 | KLT Feature Tracker | yes | yes | yes | no |
 | Harris Corner Detector | yes | yes | yes | no |
@@ -121,8 +122,19 @@ sudo apt install vpi1-demos
 | Equalize Histogram | yes | yes | no | no |
 | Background Subtractor | yes | yes | no | no |
 | Min/Max Location | yes | yes | no | no |
+| Image Flip | yes | yes | no | no |
+| Median Filter | yes | yes | yes | no |
+| FAST Corners Detector | yes | yes | no | no |
+| Mix Channels | yes | yes | no | no |
+| Canny Edge Detector | yes | yes | no | no |
+| Orb Feature Detector | yes | yes | no | no |
+| Image Statistics | yes | yes | no | no |
+| Template Matching | yes | yes | no| no |
+| Transform Estimator | yes | no | no | no |
+| Brute Force Matcher | yes | yes | no | no |
 
-  - To find more information about what these operations do and how they work, go to [Nvidia VPI1.2 Algorithms](https://docs.nvidia.com/vpi/1.2/algorithms.html).
+
+  - To find more information about what these operations do and how they work, go to [Nvidia VPI 2.3 Algorithms](https://docs.nvidia.com/vpi/2.3/algorithms.html).
 
 ## JTOP
 ### JTOP overview
@@ -131,8 +143,17 @@ sudo apt install vpi1-demos
 - To install JTOP, make sure PIP is installed along with python3. Once those are installed run `sudo pip3 install -U jetson-stats` in the terminal. You may need to logout and/or reboot the Nano before running JTOP. Once the Nano has been rebooted, simply run `jtop` in the terminal.
 ### Using JTOP in a python program
 - JTOP is capable of being imported into a python program and displaying a text summary of the Nanos stats
-- To import, add `from jtop import jtop` to the program. Then add `with jtop90 as jetson:` to call jtop methods on the jetson.
+- To import, add `from jtop import jtop` to the program. Then add `with jtop() as jetson:` to call jtop methods on the Jetson.
   - For example, once the imports are complete `print(jetson.stats)` displays CPU, GPU and accelerator data like usage, temps, power draw, etc in the terminal when the program is run.
+### Custom JTOP Data Display
+- `jetson.stats` can be mainpulated to display custom messages based on the information that is important to the user.
+- JTOP creates python dictionaries that store all of the data that it collects.
+- A python dataframe can be used to convert the dictionary into a 2D array to make it easier to manipulate.
+- Once a dataframe of the desired data has been created, you can print various parts of the dataframe depending on desired data without printing every peice of data collected.
+- In the case of the following benchmarking program, CPU, GPU, and VIC usage, temps, and energy consumption are the primary observations made.
+- To get additional energy consumption data, `jetson.power` can be used to collect data about current, voltage, power, etc. This can also be converted into a dataframe and manipulated to display only the desired data.
+
+- For more information the implementation and capabilities on all of the methods included in JTOP, go to the [JTOP stats reference page](https://rnext.it/jetson_stats/reference/jtop.html).
 
 ## Initial VPI Benchmakring
 - In order to learn more about the Nano and how its various accelerators work, initial benchmarking must be done.
@@ -149,9 +170,33 @@ python TNRBenchmarking.py <accelorator> <input video filepath>
 - Example command:
 
 ```
-python TNRBenchmarking.py cuda ../../../../opt/nvidia/vpi1/samples/assets/noisy.mp4
+python TNRBenchmarking.py cuda ../../../../../opt/nvidia/vpi1/samples/assets/noisy.mp4
 ```
 - Note: This program will create a new mp4 file and store it in the directory that the program was run from.
 
 ### Rescaling Benchmarking
-- To benchmark the `Rescaling.py` sample, pillow must be installed. to do this, run ` sudo pip3 install pillow`.
+- To benchmark the `Rescaling.py` sample, pillow must be installed. to do this, run `sudo pip3 install pillow`.
+- The `RescaleBenchmarking.py` program runs the rescaling operation on the CPU, CUDA and VIC and displays data about the speed each operation took and how it compares to the other accelerators.
+- Interestingly, after initial benchmarking tests were written, the time taken to finish the operation on any given chip would change significantly depending on which chip ran the operation first.
+- It appears that the first operation was storing the image in cache in addition to completing the operation, which explains the slower recorded time.
+- To fix this, warmup methods were written to store all data in the appropriate cache ahead of time to only time the operations completed.
+- To run the rescaling operations, run ```python3 RescaleBenchmarking.py <sample png file> ```
+
+### Perspective Warp Benchmakring
+- The Perspective warp program operates the same way as the previous two benchmarking programs and displays similar data about each operation and backend.
+
+## Distributed Training In Tensorflow
+### Distributed Training Tutorial
+- The `DistributedTrainingTutorial.py` follows the introductory tutorial on [training machine learning models on one or more gpus](https://www.tensorflow.org/tutorials/distribute/keras) using the Keras API.
+- The Keras API allows the programmer to use premade methods to train and evaluete machine learnign models.
+- Tensorflow also allows the programmer to create their own methods to better suite their needs. Keras is a good starting point to make sure the models are behaving as expected before creating custom algorithms.
+### Custom Distributed Training Tutorial
+- The `CustomDistributedTraining.py` file follows the [tensorflow custom distributed training tutorial](https://www.tensorflow.org/tutorials/distribute/custom_training).
+- Similar to the beginner quicks start tutorial, GPU memory needed to be dynamically allocated because the tutorial required more memory from the GPU than the default amount. 
+### Multi Worker Training with Keras
+- Multi worker training using Keras is a way to use multiple machines, gpus, tpus, cpus, etc in different combonations to optimize machine learning programs.
+- On the Jetson Nano, this will be used to distribute the machine learning training on the Nano's CPU, GPU, and potentially VIC and other accelerators.
+- The `MultiWorkerTrainingTutorial.py` follows the introductory tutorial for using [Keras to distribute workloads among multiple processors](https://www.tensorflow.org/tutorials/distribute/multi_worker_with_keras).
+### Custom Training
+- This will be implemented in the future
+- The Custom Training directory will hold custom training algorithms using Multi Worker strategy to attempt to split layers of a tensorflow model to distribute among the CPU and GPU.

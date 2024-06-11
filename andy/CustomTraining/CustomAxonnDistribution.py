@@ -42,3 +42,9 @@ with tf.device('/CPU:0'):
 print("TIME to FIT GPU: " + str(endFitG - startFitG))
 print("TIME to FIT CPU : " + str(endFitC - startFitC))
 
+#TODO: add power consumption numbers
+#TODO: format results to make it easy to read
+#TODO: distribute model between cpu and gpu (Like line 32-40)
+#TODO: distribute layers between cpu and gpu (Like line 12)
+#TODO: display timing and power consumption
+#TODO: Figour out how to run it on a other datasets

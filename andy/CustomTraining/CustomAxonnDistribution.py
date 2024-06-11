@@ -46,5 +46,6 @@ print("TIME to FIT CPU : " + str(endFitC - startFitC))
 #TODO: format results to make it easy to read
 #TODO: distribute model between cpu and gpu (Like line 32-40)
 #TODO: distribute layers between cpu and gpu (Like line 12)
+    # do data vs model parallelization? I think previous two todos are both model
 #TODO: display timing and power consumption
 #TODO: Figour out how to run it on a other datasets

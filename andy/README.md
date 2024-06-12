@@ -149,9 +149,16 @@ sudo apt install vpi1-demos
 - `jetson.stats` can be mainpulated to display custom messages based on the information that is important to the user.
 - JTOP creates python dictionaries that store all of the data that it collects.
 - A python dataframe can be used to convert the dictionary into a 2D array to make it easier to manipulate.
+- To create a dataframe with the desired data, run `pip install pandas` in the command line and add `import pandas as pd` to the list of import statements in the program.
+  - Panda dataframe example to store and print only the power consumption of the nano:
+    ```
+    data = pd.DataFrame(jetson.stats, index = [0])
+    energy = pd.DataFrame(jetson.power)
+    power = energy['tot'][7]
+    ```
 - Once a dataframe of the desired data has been created, you can print various parts of the dataframe depending on desired data without printing every peice of data collected.
 - In the case of the following benchmarking program, CPU, GPU, and VIC usage, temps, and energy consumption are the primary observations made.
-- To get additional energy consumption data, `jetson.power` can be used to collect data about current, voltage, power, etc. This can also be converted into a dataframe and manipulated to display only the desired data.
+- To get additional energy consumption data, `jetson.power` can be used to collect data about current, voltage, power, etc.
 
 - For more information the implementation and capabilities on all of the methods included in JTOP, go to the [JTOP stats reference page](https://rnext.it/jetson_stats/reference/jtop.html).
 
@@ -198,5 +205,10 @@ python TNRBenchmarking.py cuda ../../../../../opt/nvidia/vpi1/samples/assets/noi
 - On the Jetson Nano, this will be used to distribute the machine learning training on the Nano's CPU, GPU, and potentially VIC and other accelerators.
 - The `MultiWorkerTrainingTutorial.py` follows the introductory tutorial for using [Keras to distribute workloads among multiple processors](https://www.tensorflow.org/tutorials/distribute/multi_worker_with_keras).
 ### Custom Training
-- This will be implemented in the future
-- The Custom Training directory will hold custom training algorithms using Multi Worker strategy to attempt to split layers of a tensorflow model to distribute among the CPU and GPU.
+- The `CustomTraining` directory holds custom distribution strategies for training models in tensorflow in the Jetson Nano
+- The `CustomAxonnDistribution.py` program is a custom written basice machine learning program that runs a simple model based on the keras mnist dataset. It runs it once exclusively on the CPU, then again exclusively on the GPU. Once both processors are finished, the time each processor took along with average power consumption is displayed.
+- This program uses [JTOP](https://github.com/network-synthesis/jetson-toolkit/edit/main/andy/README.md#jtop), [pandas](https://github.com/network-synthesis/jetson-toolkit/blob/main/andy/README.md#custom-jtop-data-display), and [dynamic allocation of GPU memory](https://github.com/network-synthesis/jetson-toolkit/blob/main/andy/README.md#initial-setup) as explained in various parts of this document.
+- Based on initial result, the GPU is faster while drawing less power. 
+- The next steps for this program is to distribute the model between the CPU, GPU and potentially other proccesors like VIC if possible.
+  - In addition, comparing model parallelization to data paralleization, both distributed between CPU and GPU could be experimented with.
+- If possible, attempt to distribute each individual layer between CPU and GPU

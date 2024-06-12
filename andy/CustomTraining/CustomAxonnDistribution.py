@@ -79,9 +79,9 @@ print("Power consumption distributed between the CPU and GPU: " + str(-1) + " mi
 
 print("\n-----Comparisons-----\n")
 
-#TODO: add power consumption numbers
 #TODO: distribute model between cpu and gpu (Like line 32-40)
 #TODO: distribute layers between cpu and gpu (Like line 12)
     # do data vs model parallelization? I think previous two todos are both model
+#TODO: find out if vic could help with this stuff
 #TODO: Figour out how to run it on a other datasets
 #TODO: Distribute 1 layer between cpu and gpu

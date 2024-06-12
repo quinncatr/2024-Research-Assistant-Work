@@ -30,23 +30,27 @@ x_train = x_train.reshape(-1, 28, 28, 1).astype('float32') / 255.0
 x_test = x_test.reshape(-1, 28, 28, 1).astype('float32') / 255.0
 
 with tf.device('/GPU:0'):
-    startFitG = timer()
+    startGPU = timer()
     model.fit(x_train, y_train, epochs = 5, batch_size = 64, validation_data = (x_test, y_test))
-    endFitG = timer()
+    endGPU = timer()
 
 with tf.device('/CPU:0'):
-    startFitC = timer()
+    startCPU = timer()
     model.fit(x_train, y_train, epochs = 5, batch_size = 64, validation_data = (x_test, y_test))
-    endFitC = timer()
+    endCPU = timer()
 
-print("TIME to FIT GPU: " + str(endFitG - startFitG))
-print("TIME to FIT CPU : " + str(endFitC - startFitC))
+print("\n-----Time to Completion-----\n")
+print("Time to complete using the GPU: " + str(endGPU - startGPU) + " seconds.")
+print("Time to complete using the CPU: " + str(endCPU - startCPU) + " seconds")
+print("Time to complete when distributed to CPU and GPU: " + str(-1) + "seconds")
+
+print("\n-----Power Consumption-----\n")
+
+print("\n-----Comparisons-----\n")
 
 #TODO: add power consumption numbers
-#TODO: format results to make it easy to read
 #TODO: distribute model between cpu and gpu (Like line 32-40)
 #TODO: distribute layers between cpu and gpu (Like line 12)
     # do data vs model parallelization? I think previous two todos are both model
-#TODO: display timing and power consumption
 #TODO: Figour out how to run it on a other datasets
 #TODO: Distribute 1 layer between cpu and gpu

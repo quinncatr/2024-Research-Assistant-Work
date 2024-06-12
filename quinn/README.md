@@ -54,5 +54,12 @@ sudo pip3 install --pre --extra-index-url https://developer.download.nvidia.com/
 - From this program, I saw that the VIC is much faster at preforming the rescaling than the CPU or CUDA
 
 ## Mesh TensorFlow
+- To get mesh tensorflow running, run this command:
+`pip install mesh-tensorflow`
+- Make sure you also have normal tensorflow installed
+- The offical mesh tensorflow github repository is also helpful in getting things started: [link](https://github.com/tensorflow/mesh/blob/master/README.md)
 
 ## Distributed Tensorflow example between Jetson Nano and a Linux Virtual Machine
+- Distributed training involves using multiple processors or 'workers' to divide the workload while training a model
+- In the [distributedtraining](https://github.com/network-synthesis/jetson-toolkit/tree/main/quinn/distributedtraining) folder in the repository, there is distributed training code for each the Nano and the virtual machine
+- This works by assigning each machine a worker index, 0 and 1 in this case, and opening a port for each machine's ip to connect to

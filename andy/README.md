@@ -207,7 +207,7 @@ python TNRBenchmarking.py cuda ../../../../../opt/nvidia/vpi1/samples/assets/noi
 ### Custom Training
 - The `CustomTraining` directory holds custom distribution strategies for training models in tensorflow in the Jetson Nano
 - The `CustomAxonnDistribution.py` program is a custom written basice machine learning program that runs a simple model based on the keras mnist dataset. It runs it once exclusively on the CPU, then again exclusively on the GPU. Once both processors are finished, the time each processor took along with average power consumption is displayed.
-- This program uses [JTOP](https://github.com/network-synthesis/jetson-toolkit/edit/main/andy/README.md#jtop), pandas, and [dynamic allocation of GPU memory](https://github.com/network-synthesis/jetson-toolkit/blob/main/andy/README.md#initial-setup) as explained in various parts of this document.
+- This program uses [JTOP](https://github.com/network-synthesis/jetson-toolkit/edit/main/andy/README.md#jtop), [pandas](https://github.com/network-synthesis/jetson-toolkit/blob/main/andy/README.md#custom-jtop-data-display), and [dynamic allocation of GPU memory](https://github.com/network-synthesis/jetson-toolkit/blob/main/andy/README.md#initial-setup) as explained in various parts of this document.
 - Based on initial result, the GPU is faster while drawing less power. 
 - The next steps for this program is to distribute the model between the CPU, GPU and potentially other proccesors like VIC if possible.
   - In addition, compare model parallelization to data paralleization, both distributed between CPU and GPU

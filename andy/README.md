@@ -210,5 +210,5 @@ python TNRBenchmarking.py cuda ../../../../../opt/nvidia/vpi1/samples/assets/noi
 - This program uses [JTOP](https://github.com/network-synthesis/jetson-toolkit/edit/main/andy/README.md#jtop), [pandas](https://github.com/network-synthesis/jetson-toolkit/blob/main/andy/README.md#custom-jtop-data-display), and [dynamic allocation of GPU memory](https://github.com/network-synthesis/jetson-toolkit/blob/main/andy/README.md#initial-setup) as explained in various parts of this document.
 - Based on initial result, the GPU is faster while drawing less power. 
 - The next steps for this program is to distribute the model between the CPU, GPU and potentially other proccesors like VIC if possible.
-  - In addition, compare model parallelization to data paralleization, both distributed between CPU and GPU
+  - In addition, comparing model parallelization to data paralleization, both distributed between CPU and GPU could be experimented with.
 - If possible, attempt to distribute each individual layer between CPU and GPU

@@ -1,5 +1,8 @@
 import tensorflow as tf
+import tensorflow_datasets as tfds
 from timeit import default_timer as timer
+from jtop import jtop
+import pandas as pd
 
 device = tf.config.list_physical_devices('GPU')
 tf.config.experimental.set_memory_growth(device[0], True)
@@ -29,22 +32,50 @@ model.compile(optimizer = 'adam', loss = 'sparse_categorical_crossentropy', metr
 x_train = x_train.reshape(-1, 28, 28, 1).astype('float32') / 255.0
 x_test = x_test.reshape(-1, 28, 28, 1).astype('float32') / 255.0
 
-with tf.device('/GPU:0'):
-    startGPU = timer()
-    model.fit(x_train, y_train, epochs = 5, batch_size = 64, validation_data = (x_test, y_test))
-    endGPU = timer()
+def gpu_model_fit():
+    global startGPU
+    global endGPU
+    global gpuData
+    global gpuPower
+    with jtop() as jetson:
+            gpuData = pd.DataFrame(jetson.stats, index = [0])
+            gpuEnergy = pd.DataFrame(jetson.power)
+            gpuPower = gpuEnergy['tot'][7]
+    with tf.device('/GPU:0'):
+        startGPU = timer()
+        model.fit(x_train, y_train, epochs = 5, batch_size = 64, validation_data = (x_test, y_test))
+        endGPU = timer()
 
-with tf.device('/CPU:0'):
-    startCPU = timer()
-    model.fit(x_train, y_train, epochs = 5, batch_size = 64, validation_data = (x_test, y_test))
-    endCPU = timer()
+def cpu_model_fit():
+    global startCPU
+    global endCPU
+    global cpuData
+    global cpuPower
+    with jtop() as jetson:
+            cpuData = pd.DataFrame(jetson.stats, index = [0])
+            cpuEnergy = pd.DataFrame(jetson.power)
+            cpuPower = cpuEnergy['tot'][7]
+    with tf.device('/CPU:0'):
+        startCPU = timer()
+        model.fit(x_train, y_train, epochs = 5, batch_size = 64, validation_data = (x_test, y_test))
+        endCPU = timer()
+
+def distributed_model_fit():
+    return
+
+gpu_model_fit()
+cpu_model_fit()
+distributed_model_fit()
 
 print("\n-----Time to Completion-----\n")
 print("Time to complete using the GPU: " + str(endGPU - startGPU) + " seconds.")
 print("Time to complete using the CPU: " + str(endCPU - startCPU) + " seconds")
-print("Time to complete when distributed to CPU and GPU: " + str(-1) + "seconds")
+print("Time to complete when distributed between the CPU and GPU: " + str(-1) + " seconds")
 
 print("\n-----Power Consumption-----\n")
+print("Power consumption using the GPU: " + str(gpuPower) + " milliwatts")
+print("Power consumption using the CPU: " + str(cpuPower) + " milliwatts")
+print("Power consumption distributed between the CPU and GPU: " + str(-1) + " milliwatts")
 
 print("\n-----Comparisons-----\n")
 

@@ -149,9 +149,16 @@ sudo apt install vpi1-demos
 - `jetson.stats` can be mainpulated to display custom messages based on the information that is important to the user.
 - JTOP creates python dictionaries that store all of the data that it collects.
 - A python dataframe can be used to convert the dictionary into a 2D array to make it easier to manipulate.
+- To create a dataframe with the desired data, run `pip install pandas` in the command line and add `import pandas as pd` to the list of import statements in the program.
+  - Panda dataframe example to store and print only the power consumption of the nano:
+    ```
+    data = pd.DataFrame(jetson.stats, index = [0])
+    energy = pd.DataFrame(jetson.power)
+    power = energy['tot'][7]
+    ```
 - Once a dataframe of the desired data has been created, you can print various parts of the dataframe depending on desired data without printing every peice of data collected.
 - In the case of the following benchmarking program, CPU, GPU, and VIC usage, temps, and energy consumption are the primary observations made.
-- To get additional energy consumption data, `jetson.power` can be used to collect data about current, voltage, power, etc. This can also be converted into a dataframe and manipulated to display only the desired data.
+- To get additional energy consumption data, `jetson.power` can be used to collect data about current, voltage, power, etc.
 
 - For more information the implementation and capabilities on all of the methods included in JTOP, go to the [JTOP stats reference page](https://rnext.it/jetson_stats/reference/jtop.html).
 

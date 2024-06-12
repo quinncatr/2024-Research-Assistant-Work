@@ -65,7 +65,7 @@ def distributed_model_fit():
 
 gpu_model_fit()
 cpu_model_fit()
-distributed_model_fit()
+#distributed_model_fit()
 
 print("\n-----Time to Completion-----\n")
 print("Time to complete using the GPU: " + str(endGPU - startGPU) + " seconds.")
@@ -79,6 +79,7 @@ print("Power consumption distributed between the CPU and GPU: " + str(-1) + " mi
 
 print("\n-----Comparisons-----\n")
 
+#TODO: Add Energy consumption in joules or millijoules (power*time)
 #TODO: distribute model between cpu and gpu (Like line 32-40)
 #TODO: distribute layers between cpu and gpu (Like line 12)
     # do data vs model parallelization? I think previous two todos are both model

@@ -30,7 +30,7 @@ def vicOperations():
         vicEnergy = pd.DataFrame(jetson.power)
     
     vicCurrent = vicEnergy['tot'][4]
-    vicPower = vicEnergy['tot'][7]
+    vicPower = vicEnergy['tot'][2]
     vicVoltage = vicEnergy["tot"][8]
 
     # Using the chosen backend,
@@ -72,7 +72,7 @@ def cudaOperations():
         cudaEnergy = pd.DataFrame(jetson.power)
     
     cudaCurrent = cudaEnergy['tot'][4]
-    cudaPower = cudaEnergy['tot'][7]
+    cudaPower = cudaEnergy['tot'][2]
     cudaVoltage = cudaEnergy["tot"][8]
 
     with vpi.Backend.CUDA:
@@ -107,7 +107,7 @@ def cpuOperations():
         cpuEnergy = pd.DataFrame(jetson.power)
 
     cpuCurrent = cpuEnergy['tot'][4]
-    cpuPower = cpuEnergy['tot'][7]
+    cpuPower = cpuEnergy['tot'][2]
     cpuVoltage = cpuEnergy["tot"][8]
 
     with vpi.Backend.CPU:

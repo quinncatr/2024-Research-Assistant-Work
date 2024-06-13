@@ -37,28 +37,32 @@ def gpu_model_fit():
     global endGPU
     global gpuData
     global gpuPower
+    global gpuEnergy
     with jtop() as jetson:
             gpuData = pd.DataFrame(jetson.stats, index = [0])
-            gpuEnergy = pd.DataFrame(jetson.power)
-            gpuPower = gpuEnergy['tot'][7]
+            power = pd.DataFrame(jetson.power)
+            gpuPower = power['tot'][7]
     with tf.device('/GPU:0'):
         startGPU = timer()
         model.fit(x_train, y_train, epochs = 5, batch_size = 64, validation_data = (x_test, y_test))
         endGPU = timer()
+    gpuEnergy = gpuPower * (endGPU - startGPU)
 
 def cpu_model_fit():
     global startCPU
     global endCPU
     global cpuData
     global cpuPower
+    global cpuEnergy
     with jtop() as jetson:
             cpuData = pd.DataFrame(jetson.stats, index = [0])
-            cpuEnergy = pd.DataFrame(jetson.power)
-            cpuPower = cpuEnergy['tot'][7]
+            power = pd.DataFrame(jetson.power)
+            cpuPower = power['tot'][7]
     with tf.device('/CPU:0'):
         startCPU = timer()
         model.fit(x_train, y_train, epochs = 5, batch_size = 64, validation_data = (x_test, y_test))
         endCPU = timer()
+    cpuEnergy = cpuPower * (endCPU - startCPU)
 
 def distributed_model_fit():
     return
@@ -76,6 +80,11 @@ print("\n-----Power Consumption-----\n")
 print("Power consumption using the GPU: " + str(gpuPower) + " milliwatts")
 print("Power consumption using the CPU: " + str(cpuPower) + " milliwatts")
 print("Power consumption distributed between the CPU and GPU: " + str(-1) + " milliwatts")
+
+print("\n-----Energy Usage-----\n")
+print("Energy usage using the GPU: " + str(gpuEnergy) + " millijoules")
+print("Energy usage using the CPU: " + str(cpuEnergy) + " millijoules")
+print("Energy usage distributed between the CPU and GPU: " + str(-1) + " millijoules")
 
 print("\n-----Comparisons-----\n")
 

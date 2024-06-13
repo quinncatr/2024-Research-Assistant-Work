@@ -24,7 +24,7 @@ def get_dataset():
 #TF_CONFIG setup todo: change ip to correct
 os.environ['TF_CONFIG'] = json.dumps({
     'cluster': {
-        'worker': ['tba', 'tba']
+        'worker': ['10.0.2.15', '10.0.0.238']
     },
     'task': {'type': 'worker', 'index': 0}
 })

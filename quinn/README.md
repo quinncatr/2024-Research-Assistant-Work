@@ -58,6 +58,7 @@ sudo pip3 install --pre --extra-index-url https://developer.download.nvidia.com/
 `pip install mesh-tensorflow`
 - Make sure you also have normal tensorflow installed
 - The offical mesh tensorflow github repository is also helpful in getting things started: [link](https://github.com/tensorflow/mesh/blob/master/README.md)
+- Mnist mesh example [here](https://github.com/network-synthesis/jetson-toolkit/tree/main/quinn/mesh) could not get to work on Jetson Nano but got working on Virtual Machine
 
 ## Distributed Tensorflow example between Jetson Nano and a Linux Virtual Machine
 - Distributed training involves using multiple processors or 'workers' to divide the workload while training a model

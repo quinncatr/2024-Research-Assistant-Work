@@ -3,6 +3,7 @@ import tensorflow_datasets as tfds
 from timeit import default_timer as timer
 from jtop import jtop
 import pandas as pd
+import vpi
 
 def create_model():
     global createTime
@@ -77,40 +78,63 @@ def distributed_model_fit():
     endDist = timer()
     distEnergy = distPower * (endDist - startDist)
 
-gpu_model_fit()
-cpu_model_fit()
+def vic_model_fit():
+    global startVic
+    global endVic
+    global vicData
+    global vicPower
+    global vicEnergy
+    with jtop() as jetson:
+        vicData = pd.DataFrame(jetson.stats, index = [0])
+        power = pd.DataFrame(jetson.power)
+        vicPower = power['tot'][2]
+    with vpi.Backend.VIC:
+        startVic = timer()
+        model.fit(x_train, y_train, epochs = 5, batch_size = 64, validation_data = (x_test, y_test))
+        endVic = timer()
+    vicEnergy = vicPower * (endVic - startVic)
+
+#gpu_model_fit()
+#cpu_model_fit()
 #distributed_model_fit()
+vic_model_fit()
 
-gpuTime = round(endGPU - startGPU, 5) 
-gpuEnergy = round(gpuEnergy / 1000, 5)
+#gpuTime = round(endGPU - startGPU, 5) 
+#gpuEnergy = round(gpuEnergy / 1000, 5)
 
-cpuTime = round(endCPU - startCPU, 5)
-cpuEnergy = round(cpuEnergy / 1000, 5)
+#cpuTime = round(endCPU - startCPU, 5)
+#cpuEnergy = round(cpuEnergy / 1000, 5)
 
 #distTime = round(endDist - startDist, 5)
 #distEnergy = round(distEnergy / 1000, 5)
 
+vicTime = round(endVic - startVic, 5)
+vicEnergy = round(vicEnergy / 1000, 5)
+
 
 print("\n-----Time to Completion-----\n")
-print("Time to complete using the GPU: " + str(gpuTime) + " seconds.")
-print("Time to complete using the CPU: " + str(cpuTime) + " seconds")
+#print("Time to complete using the GPU: " + str(gpuTime) + " seconds.")
+#print("Time to complete using the CPU: " + str(cpuTime) + " seconds")
+print("Time to complete using VIC: " + str(vicTime) + " seconds")
 #print("Time to complete when distributed between the CPU and GPU: " + str(distTime) + " seconds")
 
 print("\n-----Power Consumption-----\n")
-print("Power consumption using the GPU: " + str(gpuPower / 1000) + " watts")
-print("Power consumption using the CPU: " + str(cpuPower / 1000) + " watts")
-#print("Power consumption distributed between the CPU and GPU: " + str(distPower) + " milliwatts")
+#print("Power consumption using the GPU: " + str(gpuPower / 1000) + " watts")
+#print("Power consumption using the CPU: " + str(cpuPower / 1000) + " watts")
+print("Power consumption using VIC: " + str(vicPower / 1000) + " watts")
+#print("Power consumption distributed between the CPU and GPU: " + str(distPower / 1000) + " watts")
 
 print("\n-----Energy Usage-----\n")
-print("Energy usage using the GPU: " + str(gpuEnergy) + " joules")
-print("Energy usage using the CPU: " + str(cpuEnergy) + " joules")
-#print("Energy usage distributed between the CPU and GPU: " + str(distEnergy) + " millijoules")
+#print("Energy usage using the GPU: " + str(gpuEnergy) + " joules")
+#print("Energy usage using the CPU: " + str(cpuEnergy) + " joules")
+print("Energy usage using VIC: " + str(vicEnergy) + " joules")
+#print("Energy usage distributed between the CPU and GPU: " + str(distEnergy) + " joules")
 
 print("\n-----Comparisons-----\n")
 
 
 #print("Time to create model on CPU: " + str(createTime) + " seconds.")
-print("Time to create model on GPU: " + str(createTime) + " seconds.")
+#print("Time to create model on GPU: " + str(createTime) + " seconds.")
 
-#TODO: find out if vic could help with this stuff
+#TODO: Distribute between vic cpu/gpu
 #TODO: Distribute 1 layer between cpu and gpu

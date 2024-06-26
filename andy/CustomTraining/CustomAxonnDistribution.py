@@ -8,19 +8,19 @@ def create_model():
     global createTime
     inputs = tf.keras.Input(shape = (28, 28, 1))
     conv1 = tf.keras.layers.Conv2D(32, (3, 3), activation = 'relu')(inputs)
-    createstart = timer()
-   # with tf.device('/GPU:0'):
+    createStart = timer()
+# with tf.device('/GPU:0'):
     pool1 = tf.keras.layers.MaxPooling2D(2, 2)(conv1)
     conv2 = tf.keras.layers.Conv2D(64, (3, 3), activation = 'relu')(pool1)
     pool2 = tf.keras.layers.MaxPooling2D((2, 2))(conv2)
     flatten = tf.keras.layers.Flatten()(pool2)
-   # with tf.device('/CPU:0'):
+# with tf.device('/CPU:0'):
     dense1 = tf.keras.layers.Dense((64), activation = 'relu')(flatten)
     output = tf.keras.layers.Dense(10, activation = 'softmax')(dense1)
 
     model = tf.keras.Model(inputs = inputs, outputs = output)
     createEnd = timer()
-    createTime = createEnd - createstart
+    createTime = round((createEnd - createStart), 5)
     return model
 
 
@@ -46,7 +46,7 @@ def gpu_model_fit():
         startGPU = timer()
         model.fit(x_train, y_train, epochs = 5, batch_size = 64, validation_data = (x_test, y_test))
         endGPU = timer()
-    gpuEnergy = gpuPower * (endGPU - startGPU)
+    gpuEnergy = round(gpuPower * (endGPU - startGPU), 5)
 
 def cpu_model_fit():
     global startCPU
@@ -62,7 +62,7 @@ def cpu_model_fit():
         startCPU = timer()
         model.fit(x_train, y_train, epochs = 5, batch_size = 64, validation_data = (x_test, y_test))
         endCPU = timer()
-    cpuEnergy = cpuPower * (endCPU - startCPU)
+    cpuEnergy = round(cpuPower * (endCPU - startCPU), 5)
 
 def distributed_model_fit():
     global startDist
@@ -74,29 +74,36 @@ def distributed_model_fit():
             distData = pd.DataFrame(jetson.stats, index = [0])
             power = pd.DataFrame(jetson.power)
             distPower = power['tot'][2]
-   # with tf.device('/CPU:0') and tf.device('/GPU:0'):
-       # startDist = timer()
+    # with tf.device('/CPU:0') and tf.device('/GPU:0'):
+    # startDist = timer()
     model.fit(x_train, y_train, epochs = 5, batch_size = 64, validation_data = (x_test, y_test))
-       # endDist = timer()
+    # endDist = timer()
     distEnergy = distPower * (endDist - startDist)
 
 gpu_model_fit()
-cpu_model_fit()
+#cpu_model_fit()
 #distributed_model_fit()
 
+gpuTime = round(endGPU - startGPU, 5) 
+gpuEnergy = round(gpuEnergy / 1000, 5)
+
+#cpuTime = round(endCPU - startCPU, 5)
+#cpuEnergy = round(cpuEnergy / 1000, 5)
+
+
 print("\n-----Time to Completion-----\n")
-print("Time to complete using the GPU: " + str(endGPU - startGPU) + " seconds.")
-print("Time to complete using the CPU: " + str(endCPU - startCPU) + " seconds")
+print("Time to complete using the GPU: " + str(gpuTime) + " seconds.")
+#print("Time to complete using the CPU: " + str(endCPU - startCPU) + " seconds")
 #print("Time to complete when distributed between the CPU and GPU: " + str(endDist - startDist) + " seconds")
 
 print("\n-----Power Consumption-----\n")
-print("Power consumption using the GPU: " + str(gpuPower) + " milliwatts")
-print("Power consumption using the CPU: " + str(cpuPower) + " milliwatts")
+print("Power consumption using the GPU: " + str(gpuPower / 1000) + " watts")
+#print("Power consumption using the CPU: " + str(cpuPower / 1000) + " watts")
 #print("Power consumption distributed between the CPU and GPU: " + str(distPower) + " milliwatts")
 
 print("\n-----Energy Usage-----\n")
-print("Energy usage using the GPU: " + str(gpuEnergy) + " millijoules")
-print("Energy usage using the CPU: " + str(cpuEnergy) + " millijoules")
+print("Energy usage using the GPU: " + str(gpuEnergy) + " joules")
+#print("Energy usage using the CPU: " + str(cpuEnergy / 1000) + " joules")
 #print("Energy usage distributed between the CPU and GPU: " + str(distEnergy) + " millijoules")
 
 print("\n-----Comparisons-----\n")

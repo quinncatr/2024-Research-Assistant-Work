@@ -4,19 +4,18 @@ from timeit import default_timer as timer
 from jtop import jtop
 import pandas as pd
 
-def create_model():
+def create_model(accelerator):
     global createTime
     inputs = tf.keras.Input(shape = (28, 28, 1))
     conv1 = tf.keras.layers.Conv2D(32, (3, 3), activation = 'relu')(inputs)
     createStart = timer()
-# with tf.device('/GPU:0'):
-    pool1 = tf.keras.layers.MaxPooling2D(2, 2)(conv1)
-    conv2 = tf.keras.layers.Conv2D(64, (3, 3), activation = 'relu')(pool1)
-    pool2 = tf.keras.layers.MaxPooling2D((2, 2))(conv2)
-    flatten = tf.keras.layers.Flatten()(pool2)
-# with tf.device('/CPU:0'):
-    dense1 = tf.keras.layers.Dense((64), activation = 'relu')(flatten)
-    output = tf.keras.layers.Dense(10, activation = 'softmax')(dense1)
+    with tf.device(accelerator):
+        pool1 = tf.keras.layers.MaxPooling2D(2, 2)(conv1)
+        conv2 = tf.keras.layers.Conv2D(64, (3, 3), activation = 'relu')(pool1)
+        pool2 = tf.keras.layers.MaxPooling2D((2, 2))(conv2)
+        flatten = tf.keras.layers.Flatten()(pool2)
+        dense1 = tf.keras.layers.Dense((64), activation = 'relu')(flatten)
+        output = tf.keras.layers.Dense(10, activation = 'softmax')(dense1)
 
     model = tf.keras.Model(inputs = inputs, outputs = output)
     createEnd = timer()
@@ -24,7 +23,9 @@ def create_model():
     return model
 
 
-model = create_model()
+model = create_model('/GPU:0')
+#model = create_model('/CPU:0')
+
 
 model.compile(optimizer = 'adam', loss = 'sparse_categorical_crossentropy', metrics = ['accuracy'])
 
@@ -74,46 +75,48 @@ def distributed_model_fit():
             distData = pd.DataFrame(jetson.stats, index = [0])
             power = pd.DataFrame(jetson.power)
             distPower = power['tot'][2]
-    # with tf.device('/CPU:0') and tf.device('/GPU:0'):
-    # startDist = timer()
+    startDist = timer()
     model.fit(x_train, y_train, epochs = 5, batch_size = 64, validation_data = (x_test, y_test))
-    # endDist = timer()
+    endDist = timer()
     distEnergy = distPower * (endDist - startDist)
 
 gpu_model_fit()
-#cpu_model_fit()
+cpu_model_fit()
 #distributed_model_fit()
 
 gpuTime = round(endGPU - startGPU, 5) 
 gpuEnergy = round(gpuEnergy / 1000, 5)
 
-#cpuTime = round(endCPU - startCPU, 5)
-#cpuEnergy = round(cpuEnergy / 1000, 5)
+cpuTime = round(endCPU - startCPU, 5)
+cpuEnergy = round(cpuEnergy / 1000, 5)
+
+#distTime = round(endDist - startDist, 5)
+#distEnergy = round(distEnergy / 1000, 5)
 
 
 print("\n-----Time to Completion-----\n")
 print("Time to complete using the GPU: " + str(gpuTime) + " seconds.")
-#print("Time to complete using the CPU: " + str(endCPU - startCPU) + " seconds")
-#print("Time to complete when distributed between the CPU and GPU: " + str(endDist - startDist) + " seconds")
+print("Time to complete using the CPU: " + str(cpuTime) + " seconds")
+#print("Time to complete when distributed between the CPU and GPU: " + str(distTime) + " seconds")
 
 print("\n-----Power Consumption-----\n")
 print("Power consumption using the GPU: " + str(gpuPower / 1000) + " watts")
-#print("Power consumption using the CPU: " + str(cpuPower / 1000) + " watts")
+print("Power consumption using the CPU: " + str(cpuPower / 1000) + " watts")
 #print("Power consumption distributed between the CPU and GPU: " + str(distPower) + " milliwatts")
 
 print("\n-----Energy Usage-----\n")
 print("Energy usage using the GPU: " + str(gpuEnergy) + " joules")
-#print("Energy usage using the CPU: " + str(cpuEnergy / 1000) + " joules")
+print("Energy usage using the CPU: " + str(cpuEnergy) + " joules")
 #print("Energy usage distributed between the CPU and GPU: " + str(distEnergy) + " millijoules")
 
 print("\n-----Comparisons-----\n")
 
 
-print("Time to create model: " + str(createTime) + " seconds.")
+#print("Time to create model on CPU: " + str(createTime) + " seconds.")
+print("Time to create model on GPU: " + str(createTime) + " seconds.")
 
-#TODO: distribute model between cpu and gpu (Like line 32-40)
-#TODO: distribute layers between cpu and gpu (Like line 12)
-    # do data vs model parallelization? I think previous two todos are both model
+#TODO: distribute model.fit
+#TODO: distribute layers between cpu and gpu (Like model.create)
 #TODO: find out if vic could help with this stuff
 #TODO: Distribute 1 layer between cpu and gpu
 #TODO: fix power printing not matching UI

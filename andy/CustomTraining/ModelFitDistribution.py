@@ -112,7 +112,5 @@ print("\n-----Comparisons-----\n")
 #print("Time to create model on CPU: " + str(createTime) + " seconds.")
 print("Time to create model on GPU: " + str(createTime) + " seconds.")
 
-#TODO: distribute layers between cpu and gpu (Like model.create)
 #TODO: find out if vic could help with this stuff
 #TODO: Distribute 1 layer between cpu and gpu
-#TODO: fix power printing not matching UI

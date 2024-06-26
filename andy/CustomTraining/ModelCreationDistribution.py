@@ -33,3 +33,4 @@ print(createTime)
 #TODO: distribute layers between cpu and gpu (Like model.create)
 #TODO: find out if vic could help with this stuff
 #TODO: Distribute 1 layer between cpu and gpu
+#TODO: Make a ml model that will determine optimal cpu, gpu, vic ratios

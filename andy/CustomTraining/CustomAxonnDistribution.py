@@ -4,10 +4,6 @@ from timeit import default_timer as timer
 from jtop import jtop
 import pandas as pd
 
-device = tf.config.list_physical_devices('GPU')
-tf.config.experimental.set_memory_growth(device[0], True)
-tf.config.experimental.set_virtual_device_configuration(device[0], [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=1024)])
-
 def create_model():
     global createTime
     inputs = tf.keras.Input(shape = (28, 28, 1))
@@ -85,22 +81,22 @@ def distributed_model_fit():
     distEnergy = distPower * (endDist - startDist)
 
 gpu_model_fit()
-#cpu_model_fit()
+cpu_model_fit()
 #distributed_model_fit()
 
 print("\n-----Time to Completion-----\n")
 print("Time to complete using the GPU: " + str(endGPU - startGPU) + " seconds.")
-#print("Time to complete using the CPU: " + str(endCPU - startCPU) + " seconds")
+print("Time to complete using the CPU: " + str(endCPU - startCPU) + " seconds")
 #print("Time to complete when distributed between the CPU and GPU: " + str(endDist - startDist) + " seconds")
 
 print("\n-----Power Consumption-----\n")
 print("Power consumption using the GPU: " + str(gpuPower) + " milliwatts")
-#print("Power consumption using the CPU: " + str(cpuPower) + " milliwatts")
+print("Power consumption using the CPU: " + str(cpuPower) + " milliwatts")
 #print("Power consumption distributed between the CPU and GPU: " + str(distPower) + " milliwatts")
 
 print("\n-----Energy Usage-----\n")
 print("Energy usage using the GPU: " + str(gpuEnergy) + " millijoules")
-#print("Energy usage using the CPU: " + str(cpuEnergy) + " millijoules")
+print("Energy usage using the CPU: " + str(cpuEnergy) + " millijoules")
 #print("Energy usage distributed between the CPU and GPU: " + str(distEnergy) + " millijoules")
 
 print("\n-----Comparisons-----\n")

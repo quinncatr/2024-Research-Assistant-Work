@@ -3,8 +3,6 @@ import tensorflow_datasets as tfds
 from timeit import default_timer as timer
 from jtop import jtop
 import pandas as pd
-import vpi
-import os
 import numpy as np
 
 def create_model():
@@ -68,11 +66,10 @@ def model_fit_single_processor(accelerator):
             data = pd.DataFrame(jetson.stats, index = [0])
             powerInfo = pd.DataFrame(jetson.power)
             power = powerInfo['tot'][2]
-    if accelerator == '/GPU:0' or accelerator == '/CPU:0':
-        with tf.device(accelerator):
-            start = timer()
-            model.fit(x_train, y_train, epochs = 5, batch_size = 64, validation_data = (x_test, y_test))
-            end = timer()
+    with tf.device(accelerator):
+        start = timer()
+        model.fit(x_train, y_train, epochs = 5, batch_size = 64, validation_data = (x_test, y_test))
+        end = timer()
     time = round(end - start, 5)
     energy = round(power * (end - start), 5)
 
@@ -87,11 +84,10 @@ def distributed_model_fit(accelerator):
             data = pd.DataFrame(jetson.stats, index = [0])
             powerInfo = pd.DataFrame(jetson.power)
             power = powerInfo['tot'][2]
-    if accelerator == '/GPU:0' or accelerator == '/CPU:0':
-        with tf.device(accelerator):
-            start = timer()
-            custom_fit(model, x_train, y_train, x_test, y_test, 5, 64)
-            end = timer()
+    with tf.device(accelerator):
+        start = timer()
+        custom_fit(model, x_train, y_train, x_test, y_test, 5, 64)
+        end = timer()
     time = round(end - start, 5)
     energy = round(power * (end - start), 5)
 
@@ -118,7 +114,6 @@ distCpuTime = round(end - start, 5)
 distCpuEnergy = round(energy / 1000, 5)
 distCpuPower = power
 
-
 print("\n-----Time to Completion-----\n")
 print("Time to complete using the GPU: " + str(gpuTime) + " seconds.")
 print("Time to complete using custom fit on the GPU: " + str(distGpuTime) + " seconds.")
@@ -138,9 +133,6 @@ print("Energy usage using the CPU: " + str(cpuEnergy) + " joules.")
 print("Energy usage using custom fit on the CPU: " + str(distCpuEnergy) + " joules.")
 
 print("\n-----Comparisons-----\n")
-
-#print("Time to create model on CPU: " + str(createTime) + " seconds.")
-#print("Time to create model on GPU: " + str(createTime) + " seconds.")
 
 #TODO: Distribute between vic cpu/gpu
 #TODO: Distribute 1 layer between cpu and gpu

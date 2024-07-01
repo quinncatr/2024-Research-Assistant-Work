@@ -205,11 +205,22 @@ python TNRBenchmarking.py cuda ../../../../../opt/nvidia/vpi1/samples/assets/noi
 - On the Jetson Nano, this will be used to distribute the machine learning training on the Nano's CPU, GPU, and potentially VIC and other accelerators.
 - The `MultiWorkerTrainingTutorial.py` follows the introductory tutorial for using [Keras to distribute workloads among multiple processors](https://www.tensorflow.org/tutorials/distribute/multi_worker_with_keras).
 ### Custom Training
-- The `CustomTraining ` directory holds files that create custom methods and distribution strategies for training models in tensorflow using the Nano
+- The `CustomTraining ` directory holds files that create custom methods and distribution strategies for training models in tensorflow using the Nano.
 - The `ModelFitDistribution.py` file creates a model and runs tensorflows `model.fit()` method on the CPU and GPU and records various metrics.
-- In addition, this file also implements a custom version of `model.fit()` called `custom_fit()` where a model, training data, validation daata, epochs, and batch size are all passed in as parameters
+- In addition, this file also implements a custom version of `model.fit()` called `custom_fit()` where a model, training data, validation daata, epochs, and batch size are all passed in as parameters.
 - By creating a custom fit method, it is easier to distribute various parts of it onto different processors.
-- The `ModelCreationDistribution.py` file is similar in that it implements a `create_model()` method and distributes variouys parts of the creation between the CPU and GPU.
+
+#### Results:
+- Note: Results are the average results after 5 runs.
+
+| Implementation  | Time (s) | Power Consumption (watts) | Energy Usage (joules) |
+| :---: | :---: | :---: | :---: |        
+| model.fit() on the CPU | 163.4627 | 4.6598 | 758.2384 |
+| custom_fit(model) on the CPU | 193.3596 | 4.7492 | 918.8616 |
+| model.fit() on the GPU | 190.1925 | 3.3894 | 645.2405 |
+| custom_fit(model) on the GPU | 192.1558 | 4.839 | 931.9563 |
+
+
 - The next steps for this program is to distribute the model between the CPU, GPU and potentially other proccesors like VIC if possible.
   - In addition, comparing model parallelization to data paralleization, both distributed between CPU and GPU could be experimented with.
 - If possible, attempt to distribute each individual layer between CPU and GPU

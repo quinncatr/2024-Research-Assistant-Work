@@ -73,13 +73,6 @@ def model_fit_single_processor(accelerator):
             start = timer()
             model.fit(x_train, y_train, epochs = 5, batch_size = 64, validation_data = (x_test, y_test))
             end = timer()
-    elif accelerator == vpi.Backend.VIC:
-        with vpi.Backend.VIC:
-            start = timer()
-            model.fit(x_train, y_train, epochs = 5, batch_size = 64, validation_data = (x_test, y_test))
-            end = timer()
-    else:
-        return
     time = round(end - start, 5)
     energy = round(power * (end - start), 5)
 
@@ -99,19 +92,11 @@ def distributed_model_fit(accelerator):
             start = timer()
             custom_fit(model, x_train, y_train, x_test, y_test, 5, 64)
             end = timer()
-    elif accelerator == vpi.Backend.VIC:
-        with vpi.Backend.VIC:
-            start = timer()
-            model.fit(x_train, y_train, epochs = 5, batch_size = 64, validation_data = (x_test, y_test))
-            end = timer()
-    else:
-        return
     time = round(end - start, 5)
     energy = round(power * (end - start), 5)
 
 gpu = '/GPU:0'
 cpu = '/CPU:0'
-vic = 'vpi.Backend.VIC'
 
 model_fit_single_processor(gpu)
 gpuTime = round(end - start, 5) 
@@ -124,30 +109,33 @@ cpuEnergy = round(energy / 1000, 5)
 cpuPower = power
 
 distributed_model_fit(gpu)
-disTime = round(end - start, 5)
-distEnergy = round(energy / 1000, 5)
-distPower = power
-print("Time to complete using custom fit: " + str(disTime))
-print("Energy usage using custom fit: " + str(distEnergy))
-print("Power consumption using custom fit: " + str(distPower))
+distGpuTime = round(end - start, 5)
+distGpuEnergy = round(energy / 1000, 5)
+distGpuPower = power
 
+distributed_model_fit(cpu)
+distCpuTime = round(end - start, 5)
+distCpuEnergy = round(energy / 1000, 5)
+distCpuPower = power
 
-#model_fit_single_processor(vic)
-#vicTime = round(end - start, 5)
-#vicEnergy = round(energy / 1000, 5)
-#vicPower = power
 
 print("\n-----Time to Completion-----\n")
 print("Time to complete using the GPU: " + str(gpuTime) + " seconds.")
-print("Time to complete using the CPU: " + str(cpuTime) + " seconds")
+print("Time to complete using custom fit on the GPU: " + str(distGpuTime) + " seconds.")
+print("Time to complete using the CPU: " + str(cpuTime) + " seconds.")
+print("Time to complete using custom fit on the CPU: " + str(distCpuTime) + " seconds.")
 
 print("\n-----Power Consumption-----\n")
-print("Power consumption using the GPU: " + str(gpuPower / 1000) + " watts")
-print("Power consumption using the CPU: " + str(cpuPower / 1000) + " watts")
+print("Power consumption using the GPU: " + str(gpuPower / 1000) + " watts.")
+print("Power consumption using custom fit on the GPU: " + str(distGpuPower / 1000) + " watts.")
+print("Power consumption using the CPU: " + str(cpuPower / 1000) + " watts.")
+print("Power consumption using custom fit on the CPU: " + str(distCpuPower / 1000) + " watts.")
 
 print("\n-----Energy Usage-----\n")
-print("Energy usage using the GPU: " + str(gpuEnergy) + " joules")
-print("Energy usage using the CPU: " + str(cpuEnergy) + " joules")
+print("Energy usage using the GPU: " + str(gpuEnergy) + " joules.")
+print("Energy usage using custom fit on the GPU: " + str(distGpuEnergy) + " joules.")
+print("Energy usage using the CPU: " + str(cpuEnergy) + " joules.")
+print("Energy usage using custom fit on the CPU: " + str(distCpuEnergy) + " joules.")
 
 print("\n-----Comparisons-----\n")
 

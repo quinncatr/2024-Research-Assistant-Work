@@ -4,6 +4,8 @@ from timeit import default_timer as timer
 from jtop import jtop
 import pandas as pd
 import vpi
+import os
+import numpy as np
 
 def create_model():
     global createTime
@@ -30,13 +32,38 @@ model.compile(optimizer = 'adam', loss = 'sparse_categorical_crossentropy', metr
 x_train = x_train.reshape(-1, 28, 28, 1).astype('float32') / 255.0
 x_test = x_test.reshape(-1, 28, 28, 1).astype('float32') / 255.0
 
-def generic_model_fit(accelerator):
+def custom_fit(model, x_train, y_train, x_val, y_val, epochs, batch_size):
+    for epoch in range(epochs):
+        print(f"Epoch {epoch + 1}/{epochs}")
+        train_losses = []
+        train_accuracies = []
+
+        for batch_start in range(0, len(x_train), batch_size):
+            batch_end = min(batch_start + batch_size, len(x_train))
+            x_batch = x_train[batch_start:batch_end]
+            y_batch = y_train[batch_start:batch_end]
+
+            loss, accuracy = model.train_on_batch(x_batch, y_batch)
+
+            train_losses.append(loss)
+            train_accuracies.append(accuracy)
+
+        avg_train_loss = np.mean(train_losses)
+        avg_train_accuracy = np.mean(train_accuracies)
+        print(f" Train Loss: {avg_train_loss:.4f}, Train Accuracy: {avg_train_accuracy:.4f}")
+
+        val_loss, val_accuracy = model.evaluate(x_val, y_val, verbose = 0)
+        print(f" Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_accuracy:.4f}")
+    return model
+
+def model_fit_single_processor(accelerator):
     global start
     global end
     global time
     global data
     global power
     global energy
+    #os.environ["CUDA_VISIBLE_DEVICES"] = "0"
     with jtop() as jetson:
             data = pd.DataFrame(jetson.stats, index = [0])
             powerInfo = pd.DataFrame(jetson.power)
@@ -56,39 +83,71 @@ def generic_model_fit(accelerator):
     time = round(end - start, 5)
     energy = round(power * (end - start), 5)
 
+def distributed_model_fit(accelerator):
+    global start
+    global end
+    global time
+    global data
+    global power
+    global energy
+    with jtop() as jetson:
+            data = pd.DataFrame(jetson.stats, index = [0])
+            powerInfo = pd.DataFrame(jetson.power)
+            power = powerInfo['tot'][2]
+    if accelerator == '/GPU:0' or accelerator == '/CPU:0':
+        with tf.device(accelerator):
+            start = timer()
+            custom_fit(model, x_train, y_train, x_test, y_test, 5, 64)
+            end = timer()
+    elif accelerator == vpi.Backend.VIC:
+        with vpi.Backend.VIC:
+            start = timer()
+            model.fit(x_train, y_train, epochs = 5, batch_size = 64, validation_data = (x_test, y_test))
+            end = timer()
+    else:
+        return
+    time = round(end - start, 5)
+    energy = round(power * (end - start), 5)
+
 gpu = '/GPU:0'
 cpu = '/CPU:0'
 vic = 'vpi.Backend.VIC'
 
-generic_model_fit(gpu)
+model_fit_single_processor(gpu)
 gpuTime = round(end - start, 5) 
 gpuEnergy = round(energy / 1000, 5)
 gpuPower = power
 
-generic_model_fit(cpu)
+model_fit_single_processor(cpu)
 cpuTime = round(end - start, 5)
 cpuEnergy = round(energy / 1000, 5)
 cpuPower = power
 
-generic_model_fit(vic)
-vicTime = round(end - start, 5)
-vicEnergy = round(energy / 1000, 5)
-vicPower = power
+distributed_model_fit(gpu)
+disTime = round(end - start, 5)
+distEnergy = round(energy / 1000, 5)
+distPower = power
+print("Time to complete using custom fit: " + str(disTime))
+print("Energy usage using custom fit: " + str(distEnergy))
+print("Power consumption using custom fit: " + str(distPower))
+
+
+#model_fit_single_processor(vic)
+#vicTime = round(end - start, 5)
+#vicEnergy = round(energy / 1000, 5)
+#vicPower = power
 
 print("\n-----Time to Completion-----\n")
 print("Time to complete using the GPU: " + str(gpuTime) + " seconds.")
 print("Time to complete using the CPU: " + str(cpuTime) + " seconds")
-print("Time to complete using VIC: " + str(vicTime) + " seconds")
 
 print("\n-----Power Consumption-----\n")
 print("Power consumption using the GPU: " + str(gpuPower / 1000) + " watts")
 print("Power consumption using the CPU: " + str(cpuPower / 1000) + " watts")
-print("Power consumption using VIC: " + str(vicPower / 1000) + " watts")
 
 print("\n-----Energy Usage-----\n")
 print("Energy usage using the GPU: " + str(gpuEnergy) + " joules")
 print("Energy usage using the CPU: " + str(cpuEnergy) + " joules")
-print("Energy usage using VIC: " + str(vicEnergy) + " joules")
 
 print("\n-----Comparisons-----\n")
 
@@ -98,3 +157,4 @@ print("\n-----Comparisons-----\n")
 #TODO: Distribute between vic cpu/gpu
 #TODO: Distribute 1 layer between cpu and gpu
 #TODO: Find out why VIC and CPU stats are basically identical
+# - Program doesn't identify VIC as a processor when you list physoical devices, so it falls back to CPU

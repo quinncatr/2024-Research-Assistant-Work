@@ -205,10 +205,11 @@ python TNRBenchmarking.py cuda ../../../../../opt/nvidia/vpi1/samples/assets/noi
 - On the Jetson Nano, this will be used to distribute the machine learning training on the Nano's CPU, GPU, and potentially VIC and other accelerators.
 - The `MultiWorkerTrainingTutorial.py` follows the introductory tutorial for using [Keras to distribute workloads among multiple processors](https://www.tensorflow.org/tutorials/distribute/multi_worker_with_keras).
 ### Custom Training
-- The `CustomTraining` directory holds custom distribution strategies for training models in tensorflow in the Jetson Nano
-- The `CustomAxonnDistribution.py` program is a custom written basice machine learning program that runs a simple model based on the keras mnist dataset. It runs it once exclusively on the CPU, then again exclusively on the GPU. Once both processors are finished, the time each processor took along with average power consumption is displayed.
-- This program uses [JTOP](https://github.com/network-synthesis/jetson-toolkit/edit/main/andy/README.md#jtop), [pandas](https://github.com/network-synthesis/jetson-toolkit/blob/main/andy/README.md#custom-jtop-data-display), and [dynamic allocation of GPU memory](https://github.com/network-synthesis/jetson-toolkit/blob/main/andy/README.md#initial-setup) as explained in various parts of this document.
-- Based on initial result, the GPU is faster while drawing less power. 
+- The `CustomTraining ` directory holds files that create custom methods and distribution strategies for training models in tensorflow using the Nano
+- The `ModelFitDistribution.py` file creates a model and runs tensorflows `model.fit()` method on the CPU and GPU and records various metrics.
+- In addition, this file also implements a custom version of `model.fit()` called `custom_fit()` where a model, training data, validation daata, epochs, and batch size are all passed in as parameters
+- By creating a custom fit method, it is easier to distribute various parts of it onto different processors.
+- The `ModelCreationDistribution.py` file is similar in that it implements a `create_model()` method and distributes variouys parts of the creation between the CPU and GPU.
 - The next steps for this program is to distribute the model between the CPU, GPU and potentially other proccesors like VIC if possible.
   - In addition, comparing model parallelization to data paralleization, both distributed between CPU and GPU could be experimented with.
 - If possible, attempt to distribute each individual layer between CPU and GPU

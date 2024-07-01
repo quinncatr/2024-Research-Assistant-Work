@@ -132,7 +132,40 @@ print("Energy usage using custom fit on the GPU: " + str(distGpuEnergy) + " joul
 print("Energy usage using the CPU: " + str(cpuEnergy) + " joules.")
 print("Energy usage using custom fit on the CPU: " + str(distCpuEnergy) + " joules.")
 
+cpuGpuTimeDiff = abs(cpuTime - gpuTime)
+customCpuGpuTimeDiff = abs(distCpuTime - distGpuTime)
+cpuTimeDiff = round(abs(cpuTime - distCpuTime), 2)
+gpuTimeDiff = round(abs(gpuTime - distGpuTime), 2)
+
+cpuGpuPowerDiff = abs(cpuPower - gpuPower)
+customCpuGpuPowerDiff = abs(distGpuPower - distCpuPower)
+cpuPowerDiff = abs(cpuPower - distCpuPower)
+gpuPowerDiff = abs(gpuPower - distGpuPower)
+
+cpuGpuPercentTimeDiff = round(((cpuGpuTimeDiff / ((cpuTime + gpuTime) / 2)) * 100), 2)
+customCpuGpuPercentTimeDiff = round(((customCpuGpuTimeDiff / ((cpuTime + gpuTime) / 2)) * 100), 2)
+
+cpuGpuPercentPowerDiff = round(((cpuGpuPowerDiff / ((cpuPower + gpuPower) / 2)) * 100), 2)
+customCpuGpuPercentPowerDiff = round(((customCpuGpuPowerDiff / ((cpuPower + gpuPower) / 2)) * 100), 2)
+
+cpuPercentTimeDiff = round(((cpuTimeDiff / ((cpuTime + distCpuTime) / 2)) * 100), 2)
+cpuPercentPowerDiff = round(((cpuPowerDiff / ((cpuPower + distCpuPower) / 2)) * 100), 2)
+
+gpuPercentTimeDiff = round(((gpuTimeDiff / ((gpuTime + distGpuTime) / 2)) * 100), 2)
+gpuPercentPowerDiff = round(((gpuPowerDiff / ((gpuPower + distGpuPower) / 2)) * 100), 2)
+
 print("\n-----Comparisons-----\n")
+print("The custom_fit(model) method running on the CPU was " + str(cpuPercentTimeDiff) + "% slower than the model.fit() method on the CPU.")
+print("The custom_fit(model) method running on the GPU was " + str(gpuPercentTimeDiff) + "% slower than the model.fit() method on the GPU.")
+
+print("The custom_fit(model) method running on the GPU was " + str(customCpuGpuPercentTimeDiff) + "% faster than the custom_fit(model) method on the CPU.")
+print("The model.fit() method running on the GPU was " + str(cpuGpuPercentTimeDiff) + "% slower than the model.fit() method on the CPU.")
+
+print("The custom_fit(model) method running on the CPU consumed " + str(cpuPercentPowerDiff) + "% more power than the model.fit() method on the CPU.")
+print("The custom_fit(model) method running on the GPU consumed " + str(gpuPercentPowerDiff) + "% more power than the model.fit() method on the GPU.")
+
+print("The custom_fit(model) method running on the CPU consumed " + str(customCpuGpuPercentPowerDiff) + "% less power than the custom_fit(model) method on the GPU.")
+print("The model.fit() method running on the CPU consumed " + str(cpuGpuPercentPowerDiff) + "% more power than the model.fit() method on the GPU.")
 
 #TODO: Distribute between vic cpu/gpu
 #TODO: Distribute 1 layer between cpu and gpu

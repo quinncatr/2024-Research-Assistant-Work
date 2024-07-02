@@ -91,7 +91,7 @@ def distributed_model_fit(accelerator):
             power = powerInfo['tot'][2]
     with tf.device(accelerator):
         start = timer()
-        custom_fit(model, x_train, y_train, x_test, y_test, 2, 64)
+        custom_fit(model, x_train, y_train, x_test, y_test, 5, 64)
         end = timer()
     time = round(end - start, 5)
     energy = round(power * (end - start), 5)
@@ -103,7 +103,6 @@ cpu = '/CPU:0'
 distributed_model_fit(gpu)
 distributed_model_fit(cpu)
 
-'''
 model_fit_single_processor(gpu)
 gpuTime = round(end - start, 5) 
 gpuEnergy = round(energy / 1000, 5)
@@ -113,7 +112,7 @@ model_fit_single_processor(cpu)
 cpuTime = round(end - start, 5)
 cpuEnergy = round(energy / 1000, 5)
 cpuPower = power
-'''
+
 distributed_model_fit(gpu)
 distGpuTime = round(end - start, 5)
 distGpuEnergy = round(energy / 1000, 5)
@@ -125,24 +124,24 @@ distCpuEnergy = round(energy / 1000, 5)
 distCpuPower = power
 
 print("\n-----Time to Completion-----\n")
-#print("Time to complete using the GPU: " + str(gpuTime) + " seconds.")
+print("Time to complete using the GPU: " + str(gpuTime) + " seconds.")
 print("Time to complete using custom fit on the GPU: " + str(distGpuTime) + " seconds.")
-#print("Time to complete using the CPU: " + str(cpuTime) + " seconds.")
+print("Time to complete using the CPU: " + str(cpuTime) + " seconds.")
 print("Time to complete using custom fit on the CPU: " + str(distCpuTime) + " seconds.")
 
 print("\n-----Power Consumption-----\n")
-#print("Power consumption using the GPU: " + str(gpuPower / 1000) + " watts.")
+print("Power consumption using the GPU: " + str(gpuPower / 1000) + " watts.")
 print("Power consumption using custom fit on the GPU: " + str(distGpuPower / 1000) + " watts.")
-#print("Power consumption using the CPU: " + str(cpuPower / 1000) + " watts.")
+print("Power consumption using the CPU: " + str(cpuPower / 1000) + " watts.")
 print("Power consumption using custom fit on the CPU: " + str(distCpuPower / 1000) + " watts.")
 
 print("\n-----Energy Usage-----\n")
-#print("Energy usage using the GPU: " + str(gpuEnergy) + " joules.")
+print("Energy usage using the GPU: " + str(gpuEnergy) + " joules.")
 print("Energy usage using custom fit on the GPU: " + str(distGpuEnergy) + " joules.")
-#print("Energy usage using the CPU: " + str(cpuEnergy) + " joules.")
+print("Energy usage using the CPU: " + str(cpuEnergy) + " joules.")
 print("Energy usage using custom fit on the CPU: " + str(distCpuEnergy) + " joules.")
 
-'''
+
 cpuGpuTimeDiff = abs(cpuTime - gpuTime)
 customCpuGpuTimeDiff = abs(distCpuTime - distGpuTime)
 cpuTimeDiff = round(abs(cpuTime - distCpuTime), 2)
@@ -177,8 +176,7 @@ print("The custom_fit(model) method running on the GPU consumed " + str(gpuPerce
 
 print("The custom_fit(model) method running on the CPU consumed " + str(customCpuGpuPercentPowerDiff) + "% less power than the custom_fit(model) method on the GPU.")
 print("The model.fit() method running on the CPU consumed " + str(cpuGpuPercentPowerDiff) + "% more power than the model.fit() method on the GPU.")
-'''
+
 #TODO: Distribute between vic cpu/gpu
-#TODO: Distribute 1 layer between cpu and gpu
 #TODO: Find out why VIC and CPU stats are basically identical
 # - Program doesn't identify VIC as a processor when you list physoical devices, so it falls back to CPU

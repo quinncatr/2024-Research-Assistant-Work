@@ -56,16 +56,7 @@ def create_model():
 
 model1 = create_model()
 
-
-'''
-TODO: 
-- learn more about how strategy.scope distributes stuff
-- learn more about how tf.device works and distributes stuff
-- learn more about concurrency between cpu gpu (is it possible?)
-- 
-'''
-
-
+#TODO: Find out why changing layers from cpu to gpu methods and vice versa doesn't change results
 #TODO: distribute layers between cpu and gpu (Like model.create)
 # tf.split and then concatenate?
 #TODO: find out if vic could help with this stuff

@@ -30,28 +30,33 @@ model.compile(optimizer = 'adam', loss = 'sparse_categorical_crossentropy', metr
 x_train = x_train.reshape(-1, 28, 28, 1).astype('float32') / 255.0
 x_test = x_test.reshape(-1, 28, 28, 1).astype('float32') / 255.0
 
+#This method is distributed biscally at random right now for testing purposes
+#Different combonations of where "tf.device" is produces significantly different results which is a good sign
 def custom_fit(model, x_train, y_train, x_val, y_val, epochs, batch_size):
-    for epoch in range(epochs):
-        print(f"Epoch {epoch + 1}/{epochs}")
-        train_losses = []
-        train_accuracies = []
+    with tf.device('/gpu:0'):
+        for epoch in range(epochs):
+            print(f"Epoch {epoch + 1}/{epochs}")
+            train_losses = []
+            train_accuracies = []
 
-        for batch_start in range(0, len(x_train), batch_size):
-            batch_end = min(batch_start + batch_size, len(x_train))
-            x_batch = x_train[batch_start:batch_end]
-            y_batch = y_train[batch_start:batch_end]
+            for batch_start in range(0, len(x_train), batch_size):
+                batch_end = min(batch_start + batch_size, len(x_train))
+                x_batch = x_train[batch_start:batch_end]
+                y_batch = y_train[batch_start:batch_end]
 
-            loss, accuracy = model.train_on_batch(x_batch, y_batch)
+                loss, accuracy = model.train_on_batch(x_batch, y_batch)
 
-            train_losses.append(loss)
-            train_accuracies.append(accuracy)
+                with tf.device('/cpu:0'):
+                    train_losses.append(loss)
+                    train_accuracies.append(accuracy)
 
-        avg_train_loss = np.mean(train_losses)
-        avg_train_accuracy = np.mean(train_accuracies)
-        print(f" Train Loss: {avg_train_loss:.4f}, Train Accuracy: {avg_train_accuracy:.4f}")
+            with tf.device('/cpu:0'):
+                avg_train_loss = np.mean(train_losses)
+                avg_train_accuracy = np.mean(train_accuracies)
+                print(f" Train Loss: {avg_train_loss:.4f}, Train Accuracy: {avg_train_accuracy:.4f}")
 
-        val_loss, val_accuracy = model.evaluate(x_val, y_val, verbose = 0)
-        print(f" Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_accuracy:.4f}")
+                val_loss, val_accuracy = model.evaluate(x_val, y_val, verbose = 0)
+                print(f" Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_accuracy:.4f}")
     return model
 
 def model_fit_single_processor(accelerator):
@@ -86,7 +91,7 @@ def distributed_model_fit(accelerator):
             power = powerInfo['tot'][2]
     with tf.device(accelerator):
         start = timer()
-        custom_fit(model, x_train, y_train, x_test, y_test, 5, 64)
+        custom_fit(model, x_train, y_train, x_test, y_test, 2, 64)
         end = timer()
     time = round(end - start, 5)
     energy = round(power * (end - start), 5)
@@ -94,6 +99,11 @@ def distributed_model_fit(accelerator):
 gpu = '/GPU:0'
 cpu = '/CPU:0'
 
+#warm up loop
+distributed_model_fit(gpu)
+distributed_model_fit(cpu)
+
+'''
 model_fit_single_processor(gpu)
 gpuTime = round(end - start, 5) 
 gpuEnergy = round(energy / 1000, 5)
@@ -103,7 +113,7 @@ model_fit_single_processor(cpu)
 cpuTime = round(end - start, 5)
 cpuEnergy = round(energy / 1000, 5)
 cpuPower = power
-
+'''
 distributed_model_fit(gpu)
 distGpuTime = round(end - start, 5)
 distGpuEnergy = round(energy / 1000, 5)
@@ -115,23 +125,24 @@ distCpuEnergy = round(energy / 1000, 5)
 distCpuPower = power
 
 print("\n-----Time to Completion-----\n")
-print("Time to complete using the GPU: " + str(gpuTime) + " seconds.")
+#print("Time to complete using the GPU: " + str(gpuTime) + " seconds.")
 print("Time to complete using custom fit on the GPU: " + str(distGpuTime) + " seconds.")
-print("Time to complete using the CPU: " + str(cpuTime) + " seconds.")
+#print("Time to complete using the CPU: " + str(cpuTime) + " seconds.")
 print("Time to complete using custom fit on the CPU: " + str(distCpuTime) + " seconds.")
 
 print("\n-----Power Consumption-----\n")
-print("Power consumption using the GPU: " + str(gpuPower / 1000) + " watts.")
+#print("Power consumption using the GPU: " + str(gpuPower / 1000) + " watts.")
 print("Power consumption using custom fit on the GPU: " + str(distGpuPower / 1000) + " watts.")
-print("Power consumption using the CPU: " + str(cpuPower / 1000) + " watts.")
+#print("Power consumption using the CPU: " + str(cpuPower / 1000) + " watts.")
 print("Power consumption using custom fit on the CPU: " + str(distCpuPower / 1000) + " watts.")
 
 print("\n-----Energy Usage-----\n")
-print("Energy usage using the GPU: " + str(gpuEnergy) + " joules.")
+#print("Energy usage using the GPU: " + str(gpuEnergy) + " joules.")
 print("Energy usage using custom fit on the GPU: " + str(distGpuEnergy) + " joules.")
-print("Energy usage using the CPU: " + str(cpuEnergy) + " joules.")
+#print("Energy usage using the CPU: " + str(cpuEnergy) + " joules.")
 print("Energy usage using custom fit on the CPU: " + str(distCpuEnergy) + " joules.")
 
+'''
 cpuGpuTimeDiff = abs(cpuTime - gpuTime)
 customCpuGpuTimeDiff = abs(distCpuTime - distGpuTime)
 cpuTimeDiff = round(abs(cpuTime - distCpuTime), 2)
@@ -166,7 +177,7 @@ print("The custom_fit(model) method running on the GPU consumed " + str(gpuPerce
 
 print("The custom_fit(model) method running on the CPU consumed " + str(customCpuGpuPercentPowerDiff) + "% less power than the custom_fit(model) method on the GPU.")
 print("The model.fit() method running on the CPU consumed " + str(cpuGpuPercentPowerDiff) + "% more power than the model.fit() method on the GPU.")
-
+'''
 #TODO: Distribute between vic cpu/gpu
 #TODO: Distribute 1 layer between cpu and gpu
 #TODO: Find out why VIC and CPU stats are basically identical

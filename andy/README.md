@@ -222,6 +222,10 @@ Results:
 | model.fit() on the GPU | 190.1925 | 3.3894 | 645.2405 |
 | custom_fit(model) on the GPU | 192.1558 | 4.839 | 931.9563 |
 
+- From the table above, the following comparisons can be made:
+  - Running Tensorflows built in training method `model.fit` is completed 15% faster on the CPU compared to the GPU but consumes 31.5% more power than the GPU.
+  - Running the custom made `custom_fit(model)` method is completed 0.5% slower on the CPU compared to the GPU and consumes 1.8% less power than the GPU.
+<br/>
 
 - Now that each method is tested on a single processor, the next step is to run various parts of the training loop on the CPU and GPU simultaneously.
     - Baseline distribution strategies have been hard coded into the methods and preliminary experiments show significantly different results depending on how the training is distributed.

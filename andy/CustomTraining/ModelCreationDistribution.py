@@ -58,7 +58,7 @@ model1 = create_model()
 
 #TODO: Find out why changing layers from cpu to gpu methods and vice versa doesn't change results
 #TODO: distribute layers between cpu and gpu (Like model.create)
-# tf.split and then concatenate?
+# tf.split and then concatenate or maybe need to create custom layer? 
 #TODO: find out if vic could help with this stuff
 #TODO: Distribute 1 layer between cpu and gpu
 #TODO: Make a ml model that will determine optimal cpu, gpu, vic ratios

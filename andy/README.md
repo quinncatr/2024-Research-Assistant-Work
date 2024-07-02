@@ -206,12 +206,14 @@ python TNRBenchmarking.py cuda ../../../../../opt/nvidia/vpi1/samples/assets/noi
 - The `MultiWorkerTrainingTutorial.py` follows the introductory tutorial for using [Keras to distribute workloads among multiple processors](https://www.tensorflow.org/tutorials/distribute/multi_worker_with_keras).
 ### Custom Training
 - The `CustomTraining ` directory holds files that create custom methods and distribution strategies for training models in tensorflow using the Nano.
+<br/>
+
 - The `ModelFitDistribution.py` file creates a model and runs tensorflows `model.fit()` method on the CPU and GPU and records various metrics.
 - In addition, this file also implements a custom version of `model.fit()` called `custom_fit()` where a model, training data, validation daata, epochs, and batch size are all passed in as parameters.
 - By creating a custom fit method, it is easier to distribute various parts of it onto different processors.
 
-#### Results:
-- Note: Results are the average results after 5 runs.
+Results:
+- Note: Results are the average results after 5 runs with no distribution.
 
 | Implementation  | Time (s) | Power Consumption (watts) | Energy Usage (joules) |
 | :---: | :---: | :---: | :---: |        
@@ -220,7 +222,18 @@ python TNRBenchmarking.py cuda ../../../../../opt/nvidia/vpi1/samples/assets/noi
 | model.fit() on the GPU | 190.1925 | 3.3894 | 645.2405 |
 | custom_fit(model) on the GPU | 192.1558 | 4.839 | 931.9563 |
 
+- From the table above, the following comparisons can be made:
+  - Running Tensorflows built in training method `model.fit` is completed 15% faster on the CPU compared to the GPU but consumes 31.5% more power than the GPU.
+  - Running the custom made `custom_fit(model)` method is completed 0.5% slower on the CPU compared to the GPU and consumes 1.8% less power than the GPU.
+<br/>
 
-- The next steps for this program is to distribute the model between the CPU, GPU and potentially other proccesors like VIC if possible.
-  - In addition, comparing model parallelization to data paralleization, both distributed between CPU and GPU could be experimented with.
-- If possible, attempt to distribute each individual layer between CPU and GPU
+- Now that each method is tested on a single processor, the next step is to run various parts of the training loop on the CPU and GPU simultaneously.
+    - Baseline distribution strategies have been hard coded into the methods and preliminary experiments show significantly different results depending on how the training is distributed.
+<br/>
+
+- The `ModelCreationDistribution.py` file attempts to optimize the creation of the model rather than the training of the model.
+- By making certain layers run on the CPU or the GPU, the time and resources required to create a model can be changed.
+- In addition, TensorFlow has a `tf.split()` method that allows individual layers to be split into multiple, potentially allowing one single layer to be calculated in parallel on the CPU and GPU.
+-  
+
+

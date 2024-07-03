@@ -3,12 +3,20 @@ import tensorflow_datasets as tfds
 from timeit import default_timer as timer
 from jtop import jtop
 import pandas as pd
+import numpy as np
 
-strategy = tf.distribute.MirroredStrategy(devices = ['/GPU:0', '/CPU:0'])
+strategy = tf.distribute.MirroredStrategy(devices = ['/gpu:0', '/cpu:0'])
 print('Number of devices: {}'.format(strategy.num_replicas_in_sync))
 
 inputs = tf.keras.Input(shape = (28, 28, 1))
 conv1 = tf.keras.layers.Conv2D(32, (3, 3), activation = 'relu')(inputs)
+pool1 = tf.keras.layers.MaxPooling2D(2, 2)(conv1)
+conv2 = tf.keras.layers.Conv2D(64, (3, 3), activation = 'relu')(pool1)
+pool2 = tf.keras.layers.MaxPooling2D((2, 2))(conv2)
+flatten = tf.keras.layers.Flatten()(pool2)
+dense1 = tf.keras.layers.Dense((64), activation = 'relu')(flatten)
+output = tf.keras.layers.Dense(10, activation = 'softmax')(dense1)
+
 
 def cpu_layers():
     with strategy.scope():
@@ -17,17 +25,61 @@ def cpu_layers():
             pool1 = tf.keras.layers.MaxPooling2D(2, 2)(conv1)
             conv2 = tf.keras.layers.Conv2D(64, (3, 3), activation = 'relu')(pool1)
             pool2 = tf.keras.layers.MaxPooling2D((2, 2))(conv2)
-
+            
 def gpu_layers():
     with strategy.scope():
         with tf.device('/gpu:0'):
             global output
             flatten = tf.keras.layers.Flatten()(pool2)
-            #splitFlatten = tf.split(flatten, 2)
-            #x = tf.concat([flatten, splitFlatten], axis=2)
             dense1 = tf.keras.layers.Dense((64), activation = 'relu')(flatten)
             output = tf.keras.layers.Dense(10, activation = 'softmax')(dense1)
 
+size = 8
+cpuList = []
+gpuList = []
+timeList = []
+start = 0
+end = 0
+elapsedTime = 0
+for x in range(size):
+    cpuList.append(0)
+    gpuList.append(0)
+    timeList.append(0)
+
+def add_gpu_layers():
+    gpuList[0] = inputs
+    gpuList[1] = conv1
+    gpuList[2] = pool1
+    gpuList[3] = conv2
+    gpuList[4] = pool2
+    gpuList[5] = flatten
+    gpuList[6] = dense1
+    gpuList[7] = output
+
+def remove_gpu_layers(layer):
+    gpuList.remove(layer)
+
+def loop():
+    add_gpu_layers()
+    
+    for x in range(size):
+        layer = gpuList[0]
+        start = timer()
+        with tf.device('/gpu:0'):
+            gpuList[0]
+
+        cpuList[x] = layer
+        remove_gpu_layers(layer)
+        
+        with tf.device('/cpu:0'):
+            cpuList[x]
+        end = timer()
+        elapsedTime = (end - start)
+        timeList[x] = elapsedTime
+    print("Time: " + str(sum(timeList)))
+
+
+loop()
 
 def create_model():
     global createTime
@@ -36,8 +88,9 @@ def create_model():
         createStart = timer()
         cpu_layers()
         gpu_layers()
-        model = tf.keras.Model(inputs = inputs, outputs = output)
         createEnd = timer()
+        model = tf.keras.Model(inputs = inputs, outputs = output)
+        
     createTime = round((createEnd - createStart), 5)
     model.compile(optimizer = 'adam', loss = 'sparse_categorical_crossentropy', metrics = ['accuracy'])
     print("Time to create model within scope: " + str(createTime) + " seconds")

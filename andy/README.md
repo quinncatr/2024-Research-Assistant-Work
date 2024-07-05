@@ -234,6 +234,8 @@ Results:
 - The `ModelCreationDistribution.py` file attempts to optimize the creation of the model rather than the training of the model.
 - By making certain layers run on the CPU or the GPU, the time and resources required to create a model can be changed.
 - In addition, TensorFlow has a `tf.split()` method that allows individual layers to be split into multiple, potentially allowing one single layer to be calculated in parallel on the CPU and GPU.
--  
+
+## Inference Optimization with TensorRT
+
 
 

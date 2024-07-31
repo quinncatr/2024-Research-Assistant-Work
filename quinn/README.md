@@ -66,4 +66,4 @@ sudo pip3 install --pre --extra-index-url https://developer.download.nvidia.com/
 - This works by assigning each machine a worker index, 0 and 1 in this case, and opening a port for each machine's ip to connect to
 
 ## DTensors
-- 
+- DTensors is the exte

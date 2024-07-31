@@ -72,3 +72,6 @@ sudo pip3 install --pre --extra-index-url https://developer.download.nvidia.com/
 - In the DTensors folder in my repo, I have an example python file of the DTensors tutorial on the tensorflow github that goes up to the Data parellel training section: [here](https://github.com/network-synthesis/jetson-toolkit/blob/main/quinn/DTensors/Dexample.py) 
 - All the information can be found [here](https://github.com/tensorflow/docs/blob/master/site/en/tutorials/distribute/dtensor_ml_tutorial.ipynb) about the DTensors project and additional training models
 - You can also download the .ipynb file and open it on a supported application like google drive to test the code and see what it does
+
+## DTensors Distributed Training
+- 

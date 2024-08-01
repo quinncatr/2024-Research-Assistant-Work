@@ -32,19 +32,23 @@ with jtop() as jetson:
     energy = pd.DataFrame(jetson.power)
     print("Image 1: \n")
     img1_path = 'Library.png'
-    predict_image(img1_path, top_k = 10)
+    predict_image(img1_path, top_k = 7)
     print("\nImage 2: \n")
     img2_path = 'cat.png'
-    predict_image(img2_path, top_k = 10)
+    predict_image(img2_path, top_k = 7)
     end = timer()
 
 elapsedTime = end - start
-print(elapsedTime)
+current = energy['tot'][4]
+power = energy['tot'][2]
+voltage = energy["tot"][8]
 
 
+print("Time to get inference results: " + str(elapsedTime) + " seconds.")
+print("Power consumed during inference: " + str(power) + " milliwatts.")
+print("Voltage drawn suring inference: " + str(voltage) + " millivolts.")
 
 
-'''
 from tensorflow.python.compiler.tensorrt import trt_convert as trt
 import os
 
@@ -52,6 +56,7 @@ import os
 model = tf.keras.applications.MobileNetV2(weights='imagenet')
 
 model_name = "model"
+baseModel = os.path.join(os.path.dirname(os.path.abspath(__file__)),(model_name))
 pb_model  = os.path.join(os.path.dirname(os.path.abspath(__file__)),(model_name+"_pb")) 
 trt_model = os.path.join(os.path.dirname(os.path.abspath(__file__)),(model_name+"_trt")) 
 
@@ -61,58 +66,7 @@ if not os.path.exists(pb_model):
 if not os.path.exists(trt_model):
     os.mkdir(trt_model)
 
-tf.saved_model.save(model, pb_model)
+if not os.path.exists(baseModel):
+    os.mkdir(baseModel)
 
-converter = trt.TrtGraphConverterV2(input_saved_model_dir='./model_pb')
-converter.convert()
-
-converter.save(output_saved_model_dir='tensorrt_saved_model')
-model = tf.saved_model.load('tensorrt_saved_model', export_dir='./savedModel/saved_model.pb', tags = None)
-
-def preprocess_image(img_path):
-    img = image.load_img(img_path, target_size=(224, 224))
-    img_array = image.img_to_array(img)
-    img_array = np.expand_dims(img_array, axis=0)
-    img_array = preprocess_input(img_array)
-    return img_array
-
-def predict_image(img_path):
-    img = preprocess_image(img_path)
-    preds = model(img)
-    decoded_preds = decode_predictions(preds.numpy(), top=5)[0]
-    for i, (imagenet_id, label, score) in enumerate(decoded_preds):
-        print(f"{i + 1}: {label} ({score:.2f})")
-    print()
-
-img_path1 = 'Buildings.png'
-img_path2 = 'cat.png'
-
-predict_image(img_path1)
-predict_image(img_path2)
-
-
-
-
-
-
-
-
-#concurrent inference
-def concurrent_inference(img_paths):
-    pool = multiprocessing.Pool(processes=len(img_paths))
-    print("---TEST11111----")
-    results = pool.map(predict_image, img_paths)
-
-    pool.close()
-    pool.join()
-    return results
-print("---TEST----")
-img_paths = ['Library.png', 'kodim08.png']
-
-results = concurrent_inference(img_paths)
-
-for idx, result in enumerate(results):
-    print(f"Image {idx + 1}:")
-    for i, (label, score) in enumerate(result):
-        print(f"{i + 1}: {label} ({score*100:.2f}%)")
-    print()'''
+model.save("test_saved_model.keras")

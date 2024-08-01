@@ -239,9 +239,5 @@ Results:
 ### Inference.py
 - The `Inference.py` file is a basic example of image classification use inference. THe program imports a pre trained model from Tensorflow with MobileNetV2. It then gets images from a specified file path and analyzes them to come up with a prediction of what the image is showing.
 - The model has pre determined categories and prints the top ten most likely categories with a percentage score that corresponds to the probability that the image is a part of a certain category.
-- The `Inference.py` file first runs inference on 2 different images sequentially, then optimizes the inference using TensorRT.
-### TensorRT Inference Optimization
-
-
 
 

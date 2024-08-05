@@ -31,29 +31,36 @@ def inference(processor):
     global Current
     global Power
     global Voltage
-    start = timer()
     with processor:
         with jtop() as jetson:
             data = pd.DataFrame(jetson.stats, index = [0])
             energy = pd.DataFrame(jetson.power)
+            start = timer()
             img1_path = 'Library.png'
             predict_image(img1_path, top_k = 7)
             img2_path = 'cat.png'
+            print('\n')
             predict_image(img2_path, top_k = 7)
             end = timer()
 
-    elapsedTime = end - start
+    elapsedTime = round((end - start), 5)
     Current = energy['tot'][4]
     Power = energy['tot'][2]
     Voltage = energy["tot"][8]
 
     print("Time to get inference results using "+ str(processor) + ": " + str(elapsedTime) + " seconds.")
     print("Power consumed during inference" + str(processor) + ": " + str(Power) + " milliwatts.")
-    print("Voltage drawn suring inference" + str(processor) + ": " + str(Voltage) + " millivolts.")
+    print("Voltage drawn suring inference" + str(processor) + ": " + str(Voltage) + " millivolts.\n")
 
 #warmup loop
-print("Warmup Loop")
+
+print("CPU Warmup Loop:")
+inference(vpi.Backend.CPU)
+
+print("GPU Warmup Loop:")
 inference(vpi.Backend.CUDA)
 
-inference(vpi.Backend.CUDA)
 inference(vpi.Backend.CPU)
+inference(vpi.Backend.CUDA)
+
+

@@ -26,6 +26,13 @@ def predict_image(img_path, top_k = 5):
     for i, (imagenet_id, label, score) in enumerate(decoded_preds):
         print(f"{i + 1}: {label} ({score*100:.2f}%)")
 
+def warmupLoop(processor):
+    with processor:
+        img1_path = 'Library.png'
+        predict_image(img1_path, top_k = 7)
+        img2_path = 'cat.png'
+        predict_image(img2_path, top_k = 7)
+
 def inference(processor):
     global elapsedTime
     global Current
@@ -52,15 +59,10 @@ def inference(processor):
     print("Power consumed during inference" + str(processor) + ": " + str(Power) + " milliwatts.")
     print("Voltage drawn suring inference" + str(processor) + ": " + str(Voltage) + " millivolts.\n")
 
-#warmup loop
+print("GPU Warmup Loop:")
+warmupLoop(vpi.Backend.CUDA)
+inference(vpi.Backend.CUDA)
 
 print("CPU Warmup Loop:")
+warmupLoop(vpi.Backend.CPU)
 inference(vpi.Backend.CPU)
-
-print("GPU Warmup Loop:")
-inference(vpi.Backend.CUDA)
-
-inference(vpi.Backend.CPU)
-inference(vpi.Backend.CUDA)
-
-

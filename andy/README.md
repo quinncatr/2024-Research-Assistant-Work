@@ -236,8 +236,8 @@ Results:
 - In addition, TensorFlow has a `tf.split()` method that allows individual layers to be split into multiple, potentially allowing one single layer to be calculated in parallel on the CPU and GPU.
 
 ## Model Inference
-### Inference.py
-- The `Inference.py` file is a basic example of image classification use inference. THe program imports a pre trained model from Tensorflow with MobileNetV2. It then gets images from a specified file path and analyzes them to come up with a prediction of what the image is showing.
+### ImageClassification.py
+- The `ImagesClassification.py` file is a basic example of image classification use inference. THe program imports a pre trained model from Tensorflow with MobileNetV2. It then gets images from a specified file path and analyzes them to come up with a prediction of what the image is showing.
 - The model has pre determined categories and prints the top ten most likely categories with a percentage score that corresponds to the probability that the image is a part of a certain category.
-
+- The `CustomInferenceClassification.py` file is also an image cclassification inference model but it uses a different dataset and is not pre trained. This allows modification to the training as well as the inference. 
 

@@ -1,6 +1,8 @@
 import tensorflow as tf
 import numpy as np
 import tensorflow_datasets as tfds
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 tf.enable_eager_execution()
@@ -21,12 +23,10 @@ dataset_name = 'cifar10'
 
 image, label = next(iter(train_dataset.take(1)))
 
-'''
 plt.imshow(image)
 plt.title(label.numpy())
 plt.axis('off')
-plt.show()
-'''
+plt.savefig(str('Graph').split()[0]+'.png')
 
 num_classes = dataset_info.features['label'].num_classes
 num_classes

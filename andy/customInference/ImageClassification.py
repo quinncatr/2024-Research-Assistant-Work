@@ -7,6 +7,8 @@ from jtop import jtop
 import pandas as pd
 import vpi
 
+#TODO: plot data
+
 tf.enable_eager_execution()
 
 model = tf.keras.applications.MobileNetV2(weights='imagenet')

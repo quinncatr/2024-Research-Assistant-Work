@@ -11,6 +11,7 @@ tf.enable_eager_execution()
 #TODO: Play with cpu v gpu distribution
 #TODO: play with vic in the preprocessing stuff
 #TODO Play around with different datasets and sizes
+#TODO: plot data
 
 #Can load data this way, tfds.load() will go find the data and download it for you
 # try changing it to 'Cars196' to see if it works with other datasets
@@ -76,5 +77,3 @@ new_image = tf.expand_dims(new_image, axis=0)
 predictions = model.predict(new_image)
 pred_label = tf.argmax(predictions, axis =1)
 pred_label.numpy()
-
-

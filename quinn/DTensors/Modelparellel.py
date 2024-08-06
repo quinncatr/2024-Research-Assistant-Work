@@ -174,7 +174,7 @@ def start_checkpoint_manager(model):
     print("New training")
   return manager
 
-# Start of model parrellel section
+# Start of model parellel section
 mesh = dtensor.create_mesh([("batch", 4), ("model", 2)], devices=DEVICES)
 model = MLP([dtensor.Layout([dtensor.UNSHARDED, "model"], mesh),
              dtensor.Layout(["model", dtensor.UNSHARDED], mesh)])

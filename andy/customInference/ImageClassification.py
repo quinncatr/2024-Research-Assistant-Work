@@ -68,34 +68,36 @@ print("CPU Warmup Loop:")
 warmupLoop(vpi.Backend.CPU)
 #inference(vpi.Backend.CPU)
 
-x1 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-y1 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-x2 = [None] * 10
-y2 = [None] * 10
 
-for t in range(10):
-    inference(vpi.Backend.CUDA)
-    #GPU Time for 10 seperate runs
-    x2[t] = elapsedTime
-    inference(vpi.Backend.CPU)
-    #CPU Time for 10 seperate runs
-    y2[t] = elapsedTime
+def graph():
+    x1 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    y1 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    x2 = [None] * 10
+    y2 = [None] * 10
 
-n=10
-r = np.arange(n) 
-width = 0.25
+    for t in range(10):
+        inference(vpi.Backend.CUDA)
+        #GPU Time for 10 seperate runs
+        x2[t] = elapsedTime
+        inference(vpi.Backend.CPU)
+        #CPU Time for 10 seperate runs
+        y2[t] = elapsedTime
 
-plt.bar(r, x2, color = 'g', 
-        width = width, edgecolor = 'black', 
-        label='GPU Execution Time') 
-plt.bar(r + width, y2, color = 'b', 
-        width = width, edgecolor = 'black', 
-        label='CPU Execution Time') 
+    n=10
+    r = np.arange(n) 
+    width = 0.25
 
-plt.xticks(r + width/2,['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']) 
+    plt.bar(r, x2, color = 'g', 
+            width = width, edgecolor = 'black', 
+            label='GPU Execution Time') 
+    plt.bar(r + width, y2, color = 'b', 
+            width = width, edgecolor = 'black', 
+            label='CPU Execution Time') 
 
-plt.xlabel('Run Number')
-plt.ylabel('Elapsed Time (s)')
-plt.title('CPU & GPU Inference Execution Time per Run')
-plt.legend()
-plt.savefig(str('CPU-GPU-Execution-Time-Run').split()[0]+'.png')
+    plt.xticks(r + width/2,['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']) 
+
+    plt.xlabel('Run Number')
+    plt.ylabel('Elapsed Time (s)')
+    plt.title('CPU & GPU Inference Execution Time per Run')
+    plt.legend()
+    plt.savefig(str('CPU-GPU-Execution-Time-Run').split()[0]+'.png')

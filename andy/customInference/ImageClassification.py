@@ -6,8 +6,9 @@ from timeit import default_timer as timer
 from jtop import jtop
 import pandas as pd
 import vpi
-
-#TODO: plot data
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 
 tf.enable_eager_execution()
 
@@ -32,18 +33,16 @@ def warmupLoop(processor):
     with processor:
         img1_path = 'Library.png'
         predict_image(img1_path, top_k = 7)
-        img2_path = 'cat.png'
-        predict_image(img2_path, top_k = 7)
 
 def inference(processor):
     global elapsedTime
     global Current
     global Power
     global Voltage
-    with processor:
-        with jtop() as jetson:
-            data = pd.DataFrame(jetson.stats, index = [0])
-            energy = pd.DataFrame(jetson.power)
+    with jtop() as jetson:
+        data = pd.DataFrame(jetson.stats, index = [0])
+        energy = pd.DataFrame(jetson.power)
+        with processor:
             start = timer()
             img1_path = 'Library.png'
             predict_image(img1_path, top_k = 7)
@@ -57,14 +56,46 @@ def inference(processor):
     Power = energy['tot'][2]
     Voltage = energy["tot"][8]
 
-    print("Time to get inference results using "+ str(processor) + ": " + str(elapsedTime) + " seconds.")
-    print("Power consumed during inference" + str(processor) + ": " + str(Power) + " milliwatts.")
-    print("Voltage drawn suring inference" + str(processor) + ": " + str(Voltage) + " millivolts.\n")
+    #print("Time to get inference results using "+ str(processor) + ": " + str(elapsedTime) + " seconds.")
+    #print("Power consumed during inference" + str(processor) + ": " + str(Power) + " milliwatts.")
+    #print("Voltage drawn suring inference" + str(processor) + ": " + str(Voltage) + " millivolts.\n")
 
 print("GPU Warmup Loop:")
 warmupLoop(vpi.Backend.CUDA)
-inference(vpi.Backend.CUDA)
+#inference(vpi.Backend.CUDA)
 
 print("CPU Warmup Loop:")
 warmupLoop(vpi.Backend.CPU)
-inference(vpi.Backend.CPU)
+#inference(vpi.Backend.CPU)
+
+x1 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+y1 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+x2 = [None] * 10
+y2 = [None] * 10
+
+for t in range(10):
+    inference(vpi.Backend.CUDA)
+    #GPU Time for 10 seperate runs
+    x2[t] = elapsedTime
+    inference(vpi.Backend.CPU)
+    #CPU Time for 10 seperate runs
+    y2[t] = elapsedTime
+
+n=10
+r = np.arange(n) 
+width = 0.25
+
+plt.bar(r, x2, color = 'g', 
+        width = width, edgecolor = 'black', 
+        label='GPU Execution Time') 
+plt.bar(r + width, y2, color = 'b', 
+        width = width, edgecolor = 'black', 
+        label='CPU Execution Time') 
+
+plt.xticks(r + width/2,['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']) 
+
+plt.xlabel('Run Number')
+plt.ylabel('Elapsed Time (s)')
+plt.title('CPU & GPU Inference Execution Time per Run')
+plt.legend()
+plt.savefig(str('CPU-GPU-Execution-Time-Run').split()[0]+'.png')

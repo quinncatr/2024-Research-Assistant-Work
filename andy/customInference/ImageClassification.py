@@ -36,9 +36,9 @@ def warmupLoop(processor):
 
 def inference(processor):
     global elapsedTime
-    global Current
-    global Power
-    global Voltage
+    global current
+    global power
+    global voltage
     with jtop() as jetson:
         data = pd.DataFrame(jetson.stats, index = [0])
         energy = pd.DataFrame(jetson.power)
@@ -52,13 +52,13 @@ def inference(processor):
             end = timer()
 
     elapsedTime = round((end - start), 5)
-    Current = energy['tot'][4]
-    Power = energy['tot'][2]
-    Voltage = energy["tot"][8]
+    current = energy['tot'][4]
+    power = energy['tot'][2]
+    voltage = energy["tot"][8]
 
     #print("Time to get inference results using "+ str(processor) + ": " + str(elapsedTime) + " seconds.")
-    #print("Power consumed during inference" + str(processor) + ": " + str(Power) + " milliwatts.")
-    #print("Voltage drawn suring inference" + str(processor) + ": " + str(Voltage) + " millivolts.\n")
+    #print("Power consumed during inference" + str(processor) + ": " + str(power) + " milliwatts.")
+    #print("Voltage drawn suring inference" + str(processor) + ": " + str(voltage) + " millivolts.\n")
 
 print("GPU Warmup Loop:")
 warmupLoop(vpi.Backend.CUDA)
@@ -70,6 +70,73 @@ warmupLoop(vpi.Backend.CPU)
 
 
 def graph():
+    gpuTime = [None] * 10
+    gpuPower = [None] * 10
+    cpuTime = [None] * 10
+    cpuPower = [None] * 10
+
+    for t in range(10):
+        inference(vpi.Backend.CUDA)
+        #GPU Time for 10 seperate runs
+        gpuTime[t] = elapsedTime
+        gpuPower[t] = power
+        inference(vpi.Backend.CPU)
+        #CPU Time for 10 seperate runs
+        cpuTime[t] = elapsedTime
+        cpuPower[t] = power
+
+    n=10
+    r = np.arange(n) 
+    width = 0.25
+    plt.xlabel('Run Number')
+
+    gpuTimeBar = plt.bar(r, gpuTime, color = 'g', 
+            width = width, edgecolor = 'black', 
+            label='GPU Execution Time') 
+    cpuTimeBar = plt.bar(r + width, cpuTime, color = 'b', 
+            width = width, edgecolor = 'black', 
+            label='CPU Execution Time') 
+
+    plt.xticks(r + width/2,['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']) 
+
+    timeY = plt.ylabel('Elapsed Time (s)')
+    timeTitle = plt.title('CPU & GPU Inference Execution Time per Run')
+    timeLegend = plt.legend()
+    timeSave = plt.savefig(str('CPU-GPU-Execution-Time-Run').split()[0]+'.png')
+
+    gpuTimeBar
+    cpuTimeBar
+    timeY
+    timeTitle
+    timeLegend
+    timeSave
+
+    plt.legend('')
+
+    gpuPowerBar = plt.bar(r, gpuPower, color = 'g', 
+            width = width, edgecolor = 'black', 
+            label='GPU Power Consumption') 
+    cpuPowerBar = plt.bar(r + width, cpuPower, color = 'b', 
+            width = width, edgecolor = 'black', 
+            label='CPU Power Consumption') 
+
+    plt.xticks(r + width/2,['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']) 
+
+    powerY = plt.ylabel('Power Consumption (mw)')
+    powerTitle = plt.title('CPU & GPU Inference Power Consumption per Run')
+    powerLegend = plt.legend()
+    powerSave = plt.savefig(str('CPU-GPU-Power-Consumption-Run').split()[0]+'.png')
+
+    gpuPowerBar
+    cpuPowerBar
+    powerY
+    powerTitle
+    powerLegend
+    powerSave
+
+
+'''
+def powerPerRunGraph():
     x1 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     y1 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     x2 = [None] * 10
@@ -78,10 +145,10 @@ def graph():
     for t in range(10):
         inference(vpi.Backend.CUDA)
         #GPU Time for 10 seperate runs
-        x2[t] = elapsedTime
+        x2[t] = power
         inference(vpi.Backend.CPU)
         #CPU Time for 10 seperate runs
-        y2[t] = elapsedTime
+        y2[t] = power
 
     n=10
     r = np.arange(n) 
@@ -89,15 +156,18 @@ def graph():
 
     plt.bar(r, x2, color = 'g', 
             width = width, edgecolor = 'black', 
-            label='GPU Execution Time') 
+            label='GPU Power Consumption') 
     plt.bar(r + width, y2, color = 'b', 
             width = width, edgecolor = 'black', 
-            label='CPU Execution Time') 
+            label='CPU Power Consumption') 
 
     plt.xticks(r + width/2,['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']) 
 
     plt.xlabel('Run Number')
-    plt.ylabel('Elapsed Time (s)')
-    plt.title('CPU & GPU Inference Execution Time per Run')
+    plt.ylabel('Power Consumption (mw)')
+    plt.title('CPU & GPU Inference Power Consumption per Run')
     plt.legend()
-    plt.savefig(str('CPU-GPU-Execution-Time-Run').split()[0]+'.png')
+    plt.savefig(str('CPU-GPU-Power-Consumption-Run').split()[0]+'.png')
+'''
+graph()
+#powerPerRunGraph()

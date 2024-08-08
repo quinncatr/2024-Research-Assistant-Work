@@ -117,7 +117,7 @@ def graph():
         inference(vpi.Backend.CUDA)
         #GPU Time for 10 seperate runs
         gpuTime[t] = elapsedTime
-        gpuPower[t] = power * 1000
+        gpuPower[t] = power
         inference(vpi.Backend.CPU)
         #CPU Time for 10 seperate runs
         cpuTime[t] = elapsedTime
@@ -158,7 +158,7 @@ def graph():
 
     plt.xticks(r + width/2,['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']) 
 
-    powerY = plt.ylabel('Power Consumption (W)')
+    powerY = plt.ylabel('Power Consumption (mw)')
     powerTitle = plt.title('CPU & GPU Inference Power Consumption per Run')
     powerLegend = plt.legend(handles=[gpuPowerBar, cpuPowerBar])
     powerSave = plt.savefig(str('CPU-GPU-Power-Consumption-Run').split()[0]+'.png')
@@ -175,5 +175,10 @@ def graph():
 
     averageGPUTime = sum(gpuTime) / len(gpuTime)
     averageGPUPower = sum(gpuPower) / len(gpuPower)
+
+    print("Average Execution Time for CPU: " + str(averageCPUTime) + " seconds.")
+    print("Average Power Consumption for CPU: " + str(averageCPUPower) + " milliwatts.")
+    print("Average Execution Time for GPU: " + str(averageGPUTime) + " seconds.")
+    print("Average Power Consumption for GPU: " + str(averageGPUPower) + " milliwatts.")
 
 graph()

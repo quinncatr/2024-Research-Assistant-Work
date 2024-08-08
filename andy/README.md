@@ -239,5 +239,15 @@ Results:
 ### ImageClassification.py
 - The `ImagesClassification.py` file is a basic example of image classification use inference. THe program imports a pre trained model from Tensorflow with MobileNetV2. It then gets images from a specified file path and analyzes them to come up with a prediction of what the image is showing.
 - The model has pre determined categories and prints the top ten most likely categories with a percentage score that corresponds to the probability that the image is a part of a certain category.
-- The `CustomInferenceClassification.py` file is also an image cclassification inference model but it uses a different dataset and is not pre trained. This allows modification to the training as well as the inference. 
+- The `CustomInferenceClassification.py` file is also an image classification inference model but it uses a different dataset and is not pre trained. This allows modification to the training as well as the inference.
+- Both files run inference 10 seperate times and plots the elapsed time and energy consumption of the CPU compared to the GPU for each individual run. As shown by the `.png` files, there seems to be no clear pattern when it comes to which processor is faster. The follwing table illistrates the average speed and power consumption over the 10 seperate runs.
+
+Results:
+
+- Results are the average over 10 seperate runs. Results from each run can be found in the labeled `.png` files.   
+
+| Processor | Time (s) | Power Consumption (mW) |
+| :---: | :---: | :---: |
+| CPU | 0.273489 | 4151.7 |
+| GPU | 0.224041 | 4131.6 |
 

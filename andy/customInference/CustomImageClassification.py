@@ -37,8 +37,9 @@ num_classes = dataset_info.features['label'].num_classes
 num_classes
 
 def preprocess_data(image, label):
-    image = tf.cast(image, tf.float32) / 255.0
-    return image, label
+    with vpi.Backend.VIC:
+        image = tf.cast(image, tf.float32) / 255.0
+        return image, label
 
 train_dataset = train_dataset.map(preprocess_data)
 test_dataset = test_dataset.map(preprocess_data)
@@ -116,7 +117,7 @@ def graph():
         inference(vpi.Backend.CUDA)
         #GPU Time for 10 seperate runs
         gpuTime[t] = elapsedTime
-        gpuPower[t] = power
+        gpuPower[t] = power * 1000
         inference(vpi.Backend.CPU)
         #CPU Time for 10 seperate runs
         cpuTime[t] = elapsedTime
@@ -157,7 +158,7 @@ def graph():
 
     plt.xticks(r + width/2,['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']) 
 
-    powerY = plt.ylabel('Power Consumption (mw)')
+    powerY = plt.ylabel('Power Consumption (W)')
     powerTitle = plt.title('CPU & GPU Inference Power Consumption per Run')
     powerLegend = plt.legend(handles=[gpuPowerBar, cpuPowerBar])
     powerSave = plt.savefig(str('CPU-GPU-Power-Consumption-Run').split()[0]+'.png')
@@ -168,5 +169,11 @@ def graph():
     powerTitle
     powerLegend
     powerSave
+
+    averageCPUTime = sum(cpuTime) / len(cpuTime)
+    averageCPUPower = sum(cpuPower) / len(cpuPower)
+
+    averageGPUTime = sum(gpuTime) / len(gpuTime)
+    averageGPUPower = sum(gpuPower) / len(gpuPower)
 
 graph()

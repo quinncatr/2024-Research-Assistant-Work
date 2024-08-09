@@ -136,10 +136,10 @@ def graph():
     powerLegend
     powerSave
 
-    averageCPUTime = sum(cpuTime) / len(cpuTime)
+    averageCPUTime = round(sum(cpuTime) / len(cpuTime), 5)
     averageCPUPower = sum(cpuPower) / len(cpuPower)
 
-    averageGPUTime = sum(gpuTime) / len(gpuTime)
+    averageGPUTime = round(sum(gpuTime) / len(gpuTime), 5)
     averageGPUPower = sum(gpuPower) / len(gpuPower)
 
     print("Average Execution Time for CPU: " + str(averageCPUTime) + " seconds.")

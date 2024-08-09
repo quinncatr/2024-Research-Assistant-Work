@@ -12,6 +12,10 @@ import matplotlib.pyplot as plt
 
 tf.enable_eager_execution()
 
+#TODO: Do axonn layer splitting for the inference
+#TODO: Play with cpu v gpu distribution
+#TODO Play around with different datasets and sizes
+
 model = tf.keras.applications.MobileNetV2(weights='imagenet')
 model.summary()
 
@@ -72,6 +76,9 @@ def graph():
     cpuTime = [None] * 10
     cpuPower = [None] * 10
 
+    warmupLoop(vpi.Backend.CUDA)
+    warmupLoop(vpi.Backend.CPU)
+
     for t in range(10):
         inference(vpi.Backend.CUDA)
         #GPU Time for 10 seperate runs
@@ -128,5 +135,16 @@ def graph():
     powerTitle
     powerLegend
     powerSave
+
+    averageCPUTime = sum(cpuTime) / len(cpuTime)
+    averageCPUPower = sum(cpuPower) / len(cpuPower)
+
+    averageGPUTime = sum(gpuTime) / len(gpuTime)
+    averageGPUPower = sum(gpuPower) / len(gpuPower)
+
+    print("Average Execution Time for CPU: " + str(averageCPUTime) + " seconds.")
+    print("Average Power Consumption for CPU: " + str(averageCPUPower) + " milliwatts.")
+    print("Average Execution Time for GPU: " + str(averageGPUTime) + " seconds.")
+    print("Average Power Consumption for GPU: " + str(averageGPUPower) + " milliwatts.")
 
 graph()

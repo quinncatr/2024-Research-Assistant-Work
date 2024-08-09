@@ -11,7 +11,8 @@ from timeit import default_timer as timer
 
 tf.enable_eager_execution()
 
-#TODO: start recording time, energy etc on cpu and gpu
+#TODO: Do axonn layer splitting for the inference
+
 #TODO: Play with cpu v gpu distribution
 #TODO: play with vic in the preprocessing stuff
 #TODO Play around with different datasets and sizes

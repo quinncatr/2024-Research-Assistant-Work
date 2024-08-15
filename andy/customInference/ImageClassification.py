@@ -16,7 +16,7 @@ tf.enable_eager_execution()
 #TODO: Play with cpu v gpu distribution
 #TODO Play around with different datasets and sizes
 
-model = tf.keras.applications.MobileNetV2(weights='imagenet')
+model = tf.keras.applications.ResNet101(weights='imagenet')
 model.summary()
 
 def preprocess_image(img_path):
@@ -36,7 +36,7 @@ def predict_image(img_path, top_k = 5):
 def warmupLoop(processor):
     with processor:
         img1_path = 'Library.png'
-        predict_image(img1_path, top_k = 7)
+        predict_image(img1_path, top_k = 5)
 
 def inference(processor):
     global elapsedTime
@@ -49,10 +49,10 @@ def inference(processor):
         with processor:
             start = timer()
             img1_path = 'Library.png'
-            predict_image(img1_path, top_k = 7)
+            predict_image(img1_path, top_k = 5)
             img2_path = 'cat.png'
             print('\n')
-            predict_image(img2_path, top_k = 7)
+            predict_image(img2_path, top_k = 5)
             end = timer()
 
     elapsedTime = round((end - start), 5)

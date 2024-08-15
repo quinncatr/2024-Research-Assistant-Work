@@ -69,9 +69,10 @@ sudo pip3 install --pre --extra-index-url https://developer.download.nvidia.com/
 - DTensors is what the Tensorflow group has turned the Mesh Tensorflow project into in the newer versions of Tensorflow
 - For the most part, DTensor commands and methods only work on version 2.9 of Tensorflow and up, so it does not work on the Jetson Nano that is suck on Tensorflow v1.15
 - To install DTensors, use command: `!pip install --quiet --upgrade tensorflow-datasets`
-- In the DTensors folder in my repo, I have an example python file of the DTensors tutorial on the tensorflow github that goes up to the Data parellel training section: [here](https://github.com/network-synthesis/jetson-toolkit/blob/main/quinn/DTensors/Dexample.py) 
+- In the DTensors folder in my repo, I have an example python file of the DTensors tutorial on the tensorflow github that goes up to the Data and Model parellel training section: [here](https://github.com/network-synthesis/jetson-toolkit/blob/main/quinn/DTensors/Dexample.py) 
 - All the information can be found [here](https://github.com/tensorflow/docs/blob/master/site/en/tutorials/distribute/dtensor_ml_tutorial.ipynb) about the DTensors project and additional training models
 - You can also download the .ipynb file and open it on a supported application like google drive to test the code and see what it does
 
 ## DTensors Distributed Training
-- 
+- Combined both the distributed training code and the DTensors example code in [github](https://github.com/network-synthesis/jetson-toolkit/blob/main/quinn/distributedtraining/dtensorsmachine1.py)
+- Uses tf.distribute.MultiWorkerMirroredStrategy() to accomplish distributed training with DTensors

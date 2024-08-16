@@ -251,5 +251,21 @@ Results:
 | CPU | 1.02291 | 4361.1 |
 | GPU | 0.99612 | 4280.0 |
 
+### Tensorboard
+- To find more information about how model.predict() works, tensorboard can be used to visualize the operations preformed on each layer.
+- Tensorboard comes preinstalled with tensorflow but in order to be able to fully visualize the operations in VSCode, it must be upgraded to version 2. This allows VSCode to install an extension that makes working with tensorboard much easier.
+  - VSCode should have a popup asking to update tensorboard automatically, just click yes.
+- Once tensorbord is set up a log of the operations is needed.
+- After the model is compiled, add the following lines of code:
+
+```
+log_dir = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir = log_dir, histogram_freq = 1)
+```
+
+
+
+
+
 
 
